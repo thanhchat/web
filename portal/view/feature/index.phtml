@@ -287,8 +287,13 @@
         $('#add').puibutton({
             icon: 'fa-external-link-square',
             click: function () {
-                $("#frmFeature")[0].reset();
-                $('#dlgAddFeature').puidialog('show');
+				var value = $('#drpFeatureType').puidropdown('getSelectedValue');
+				if (value != -1) {
+					$("#frmFeature")[0].reset();
+					$('#dlgAddFeature').puidialog('show');
+				}else{
+					addMessage([{severity: 'warn', summary: '', detail: 'Bạn chưa chọn loại tính năng'}]);
+				}
             }
         });
     </script>
