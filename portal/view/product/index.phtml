@@ -1,0 +1,321 @@
+<div>
+    <script type="text/javascript">
+        $('#titleProduct').puimegamenu();
+        $('#add').puibutton({icon: 'fa-plus'});
+        $('#search').puibutton({icon: 'fa-search'});
+        $('#default').puipanel();
+        $('#txtProductId').puiinputtext();
+        $('#txtProductNameAdd').puiinputtext();
+        $('#txtProductKH').puiinputtext();
+        $('#txtProductIdAdd').puiinputtext();
+        $('#txtProductName').puiinputtext();
+        $('#mess').puigrowl();
+        addMessage = function (msg) {
+            $('#mess').puigrowl('show', msg);
+        };
+
+        $('#tblProduct').puidatatable({
+            emptyMessage: 'Không có danh sách sản phẩm',
+            stickyHeader:true,
+            paginator: {
+                rows: 10
+            },
+            columns: [
+                {
+                    field: 'PRODUCT_ID', headerText: 'Mã sản phẩm', content: function (car) {
+                    return $('<a href="#view/product/product-detail.phtml?id=' + car.PRODUCT_ID + '" style="text-decoration: underline;">' + car.PRODUCT_ID + '<a>')
+                }, sortable: true,filter: true,headerStyle:'width:130px;',bodyStyle:'text-align:center'
+                },
+                {field: 'MANUFACTURER_PARTY_ID', headerText: 'Ký hiệu', sortable: true,filter: true,headerStyle:'width:130px;',bodyStyle:'text-align:center'},
+                {field: 'PRODUCT_NAME', headerText: 'Tên sản phẩm', sortable: true,filter: true},
+                {field: 'SMALL_IMAGE_URL', headerText: 'Hình ảnh',headerStyle:'width:150px;', sortable: true,content: function (car) {
+                    if(car.SMALL_IMAGE_URL!="")
+                        return $('<img src="../../../../public/product/'+car.PRODUCT_ID+'/thumbnail/'+car.SMALL_IMAGE_URL+'">');
+                    else
+                        return $('<img src="../../../../public/nopicture.jpg" width="80px" height="80px">');
+                }},
+				{field: 'PRODUCT_FEATURE', headerText: 'Tính năng', sortable: true,content: function (car) {
+                        return car.PRODUCT_FEATURE;
+                }},
+                {field: 'IS_ACTIVE', headerText: 'Trạng thái', sortable: true,headerStyle:'width:130px;',bodyStyle:'text-align:center'}
+            ],
+            datasource: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/product/list-product.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            }
+        });
+        document.title = 'Danh sách sản phẩm';
+        $('#frmSearchProduct').submit(function (e) {
+            $('#loading').show();
+            $('#default').block({
+                message: null,
+                overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+            });
+            var postData = $(this).serializeArray();
+            var formURL = $(this).attr("action");
+            $.ajax(
+                {
+                    url: formURL,
+                    type: "POST",
+                    data: postData,
+                    dataType: "json",
+                    success: function (response) {
+                        $('#loading').hide();
+                        $('#default').unblock();
+                        //$('#tblProduct').puidatatable('reset');
+                        $('#tblProduct').puidatatable({
+                            emptyMessage: 'Không có danh sách sản phẩm',
+                            paginator: {
+                                rows: 10
+                            },
+                            columns: [
+								{
+									field: 'PRODUCT_ID', headerText: 'Mã sản phẩm', content: function (car) {
+									return $('<a href="#view/product/product-detail.phtml?id=' + car.PRODUCT_ID + '" style="text-decoration: underline;">' + car.PRODUCT_ID + '<a>')
+								}, sortable: true,filter: true,headerStyle:'width:130px;',bodyStyle:'text-align:center'
+								},
+								{field: 'MANUFACTURER_PARTY_ID', headerText: 'Ký hiệu', sortable: true,filter: true,headerStyle:'width:130px;',bodyStyle:'text-align:center'},
+								{field: 'PRODUCT_NAME', headerText: 'Tên sản phẩm', sortable: true,filter: true},
+								{field: 'SMALL_IMAGE_URL', headerText: 'Hình ảnh',headerStyle:'width:150px;', sortable: true,content: function (car) {
+									if(car.SMALL_IMAGE_URL!="")
+										return $('<img src="../../../../public/product/'+car.PRODUCT_ID+'/thumbnail/'+car.SMALL_IMAGE_URL+'">');
+									else
+										return $('<img src="../../../../public/nopicture.jpg" width="80px" height="80px">');
+								}},
+								{field: 'PRODUCT_FEATURE', headerText: 'Tính năng', sortable: true,content: function (car) {
+										return car.PRODUCT_FEATURE;
+								}},
+								{field: 'IS_ACTIVE', headerText: 'Trạng thái', sortable: true,headerStyle:'width:130px;',bodyStyle:'text-align:center'}
+                            ],
+                            datasource: response
+                        });
+                    }
+                });
+            e.preventDefault();	//STOP default action
+
+        });
+        $('#dlgAddProduct').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 500,
+            height: 140,
+            modal: true,
+            buttons: [{
+                text: 'Đóng',
+                icon: 'fa-close',
+                click: function () {
+                    $('#dlgAddProduct').puidialog('hide');
+                }
+            },
+                {
+                    text: 'Thêm mới',
+                    icon: 'fa-plus',
+                    click: function () {
+                        var manufacid = $.trim($('#txtProductIdAdd').val());
+                        var productName = $.trim($('#txtProductNameAdd').val());
+                        if (manufacid == null || manufacid == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập ký hiệu sản phẩm'}]);
+                        } else if (productName == null || productName == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập tên sản phẩm'}]);
+                        } else {
+                            var _form = $('#frmAddProduct');
+                            _form.unbind();
+                            _form.submit(function (e) {
+                                $('#loading').show();
+                                $('#dlgAddProduct').block({
+                                    message: null,
+                                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                                });
+                                var postData = $(this).serializeArray();
+                                var formURL = $(this).attr("action");
+                                $.ajax(
+                                    {
+                                        url: formURL,
+                                        type: "POST",
+                                        data: postData,
+                                        dataType: "json",
+                                        success: function (data, textStatus, jqXHR) {
+                                            $('#loading').hide();
+                                            $('#dlgAddProduct').unblock();
+                                            if (data.mess == 1) {
+                                                addMessage([{
+                                                    severity: 'error',
+                                                    summary: '',
+                                                    detail: 'Ký hiệu sản phẩm đã tồn tại'
+                                                }]);
+                                            } else {
+                                                $('#tblProduct').puidatatable('reload');
+                                                addMessage([{
+                                                    severity: 'info',
+                                                    summary: '',
+                                                    detail: 'Thêm sản phẩm thành công'
+                                                }]);
+                                            }
+                                            //$('#dlgAddProduct').puidialog('hide');
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            addMessage([{severity: 'error', summary: '', detail: 'Lỗi thêm sản phẩm'}]);
+                                            $('#loading').hide();
+                                            $('#dlgAddProduct').unblock();
+                                        }
+                                    });
+                                e.preventDefault();	//STOP default action
+                                //e.unbind();
+                            });
+                            $("#frmAddProduct").submit(); //SUBMIT FORM
+                        }
+
+                    }
+                }
+            ]
+        });
+        $('#add').puibutton({
+            icon: 'fa-external-link-square',
+            click: function () {
+                $("#frmAddProduct")[0].reset();
+                $('#dlgAddProduct').puidialog('show');
+            }
+        });
+        $('#drpCategory').puidropdown({
+            data: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/category/list-category.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            }
+        });
+        $('#drpCategoryAdd').puidropdown({
+            data: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/category/list-category.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            }
+        });
+    </script>
+    <style type="text/css">
+        .ui-dropdown {
+            width: 150px;
+        }
+
+        img#loading {
+            position: absolute;
+            display: none;
+            top: 40%;
+            right: 40%;
+            z-index: 10000;
+        }
+    </style>
+    <img id="loading" src='../../primeui/showcase/resources/images/loading.gif'/>
+
+    <div id="dlgAddProduct" title="Thêm sản phẩm">
+        <div id="mess"/>
+        <p>
+
+        <form name="frmAddProduct" id="frmAddProduct" action="ajax-action/product/product.php" method="POST">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Danh mục</div>
+                    <div class="ui-grid-col-2">
+                        <select id="drpCategoryAdd" name="drpCategoryAdd"></select>
+                    </div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Ký hiệu</div>
+                    <div class="ui-grid-col-2"><input id="txtProductIdAdd" name="txtProductIdAdd" type="text"
+                                                      style="width: 165px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Tên sản phẩm</div>
+                    <div class="ui-grid-col-2"><input id="txtProductNameAdd" name="txtProductNameAdd" type="text"
+                                                      style="width: 330px;"/></div>
+                </div>
+            </div>
+        </form>
+        </p>
+    </div>
+    <div class="ContentSideSections">
+        <div id="titleProduct">
+            <ul>
+                <li style="width:20%;padding-top: 8px;font-size: 13px;font-weight:600;">DANH SÁCH SẢN PHẨM</li>
+                <li style="width:80%;text-align:right">
+                    <button id="add" type="button">Thêm sản phẩm</button>
+                </li>
+                <ul>
+        </div>
+        <form name="frmSearchProduct" id="frmSearchProduct" action="ajax-action/product/list-product.php" method="POST">
+            <div id="default" style="margin-top:5px">
+                <div class="ui-grid ui-grid-responsive ui-fluid">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-1">Mã sản phẩm</div>
+                        <div class="ui-grid-col-2"><input id="txtProductId" name="txtProductId" type="text"
+                                                          /></div>
+                        <div class="ui-grid-col-1" style="padding-left:7px;">Tên sản phẩm</div>
+                        <div class="ui-grid-col-2"><input id="txtProductName" name="txtProductName" type="text"
+                                                          /></div>
+                        <div class="ui-grid-col-1" style="padding-left:7px;">Ký hiệu</div>
+                        <div class="ui-grid-col-2"><input id="txtProductKH" name="txtProductKH" type="text"
+                                                          /></div>
+                    </div>
+					
+                    <div class="ui-grid-row" style="margin-top:8px">
+                        <div class="ui-grid-col-1">Danh mục</div>
+                        <div class="ui-grid-col-2">
+                            <select id="drpCategory" name="drpCategory">
+                                <option value="-1">--Tất cả--</option>
+                            </select>
+                        </div>
+                        <div class="ui-grid-col-1" style="padding-left:7px;">Trạng thái</div>
+                        <div class="ui-grid-col-2">
+                            <p-dropdown id="basic1" name="drpActive">
+                                <option value="-1">--Tất cả--</option>
+                                <option value="Y">Hiển thị</option>
+                                <option value="N">Ẩn</option>
+                            </p-dropdown>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row" style="margin-top:8px">
+                        <div class="ui-grid-col-1">
+                        </div>
+                        <div class="ui-grid-col-2">
+                            <button id="search" type="submit">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="ContentSideSections Implementation">
+        <div id="tblProduct"></div>
+    </div>
+
+    <!--<div id="SourceContentSide" class="ContentSideSections Source">
+        dddđ
+    </div>-->
+
+    <script language="javascript">
+        SyntaxHighlighter.highlight();
+    </script>
+
+</div>

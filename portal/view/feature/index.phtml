@@ -1,0 +1,379 @@
+<div>
+    <script type="text/javascript">
+
+        $('#titleFeature').puimegamenu();
+        $('#pnlFeature').puimegamenu();
+        $('#drpFeatureType').puidropdown({
+            data: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/feature-type/list-feature-type.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            }
+        });
+        $('#view').puibutton({icon: 'fa-search'});
+        $('#add').puibutton({icon: 'fa-plus'});
+        $('#add').puibutton('disable');
+        $('#txtFeatureActive').puicheckbox();
+        $('#txtFeatureDes').puiinputtext();
+        $('#txtFeatureOrdering').puiinputtext();
+        $('#mess').puigrowl();
+        addMessage = function (msg) {
+            $('#mess').puigrowl('show', msg);
+        };
+        $('#view').puibutton({
+            click: function (event) {
+                //$('#loading').show();
+                //$('#default').block({
+                //	message: null,
+                //	overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                //});
+                // $('#loading').hide();
+                // $('#default').unblock();
+                $('#loading').show();
+                $('#tblFeature').block({
+                    message: null,
+                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                });
+                $('#pnlFeature').block({
+                    message: null,
+                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                });
+                var value = $('#drpFeatureType').puidropdown('getSelectedValue');
+                if (value != -1) {
+                    $('#add').puibutton('enable');
+                    $('#txtFeatureTypeId').val(value);
+
+                    $.ajax({
+                        type: "GET",
+                        url: 'ajax-action/feature/feature.php?id=' + value,
+                        dataType: "json",
+                        context: this,
+                        success: function (response) {
+                            $('#loading').hide();
+                            $('#tblFeature').unblock();
+                            $('#pnlFeature').unblock();
+                            $('#tblFeature').puidatatable({
+                                emptyMessage: 'Không có danh sách tính năng',
+                                editMode: 'cell',
+                                paginator: {
+                                    rows: 10
+                                },
+                                columns: [
+                                    {
+                                        field: 'PRODUCT_FEATURE_ID', headerText: 'Mã tính năng', sortable: true
+                                    },
+                                    {
+                                        field: 'DESCRIPTION_FEATURE',
+                                        headerText: 'Mô tả',
+                                        sortable: true,
+                                        editor: 'input'
+                                    },
+                                    {
+                                        field: 'DEFAULT_SEQUENCE_NUM',
+                                        headerText: 'Thứ tự',
+                                        sortable: true,
+                                        editor: 'input'
+                                    },
+                                    {
+                                        field: 'ACTIVE',
+                                        headerText: 'Trạng thái',
+                                        sortable: true,
+                                        content: function (car) {
+                                            if (car.ACTIVE == 'Ẩn')
+                                                return $('<span onClick=updateAction("' + car.PRODUCT_FEATURE_ID + '") style="text-decoration: underline;color:red;cursor: pointer;">' + car.ACTIVE + '</span>');
+                                            else
+                                                return $('<span onClick=updateAction("' + car.PRODUCT_FEATURE_ID + '") style="text-decoration: underline;color:blue;cursor: pointer;">' + car.ACTIVE + '</span>');
+                                        }
+                                    }
+                                ],
+                                datasource: response,
+                                cellEdit: function (event, ui) {
+                                    //$('#dlgMess').puidialog('show');
+                                    var value = ui.newValue;
+                                    if (value == null || value == "") {
+                                        addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập giá trị'}]);
+                                        $('#tblFeature').puidatatable('reload');
+                                    } else if (ui.field == 'DEFAULT_SEQUENCE_NUM' && value % 1 !== 0) {
+                                        addMessage([{
+                                            severity: 'warn',
+                                            summary: '',
+                                            detail: 'Thứ tự phải là số nguyên'
+                                        }]);
+                                        $('#tblFeature').puidatatable('reload');
+                                    } else {
+                                        $('#loading').show();
+                                        $('#tblFeature').block({
+                                            message: null,
+                                            overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                                        });
+                                        $.ajax({
+                                            type: "GET",
+                                            url: 'ajax-action/feature/update-feature.php?field=' + ui.field + '&val=' + ui.newValue + '&id=' + ui.data.PRODUCT_FEATURE_ID,
+                                            dataType: "json",
+                                            context: this,
+                                            success: function (data) {
+                                                $('#loading').hide();
+                                                $('#tblFeature').unblock();
+                                                if (data.mess == 2) {
+                                                    addMessage([{
+                                                        severity: 'error',
+                                                        summary: '',
+                                                        detail: 'Sửa dữ liệu bị lỗi'
+                                                    }]);
+                                                } else {
+                                                    $('#tblFeature').puidatatable('reload');
+                                                    addMessage([{
+                                                        severity: 'info',
+                                                        summary: '',
+                                                        detail: 'Cập nhật giá trị thành công'
+                                                    }]);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    $('#loading').hide();
+                    $('#tblFeature').unblock();
+                    $('#pnlFeature').unblock();
+                    $('#add').puibutton('disable');
+                    addMessage([{severity: 'warn', summary: '', detail: 'Bạn chưa chọn loại tính năng'}]);
+                    $('#tblFeature').puidatatable({
+                        emptyMessage: 'Không có danh sách tính năng',
+                        editMode: 'cell',
+                        paginator: {
+                            rows: 10
+                        },
+                        columns: [
+                            {
+                                field: 'PRODUCT_FEATURE_ID', headerText: 'Mã tính năng', sortable: true
+                            },
+                            {field: 'DESCRIPTION_FEATURE', headerText: 'Mô tả', sortable: true, editor: 'input'},
+                            {field: 'DEFAULT_SEQUENCE_NUM', headerText: 'Thứ tự', sortable: true, editor: 'input'},
+                            {
+                                field: 'ACTIVE', headerText: 'Trạng thái', sortable: true, content: function (car) {
+                                if (car.ACTIVE == 'Ẩn')
+                                    return $('<span onClick=updateAction("' + car.PRODUCT_FEATURE_ID + '") style="text-decoration: underline;color:red;cursor: pointer;">' + car.ACTIVE + '</span>');
+                                else
+                                    return $('<span onClick=updateAction("' + car.PRODUCT_FEATURE_ID + '") style="text-decoration: underline;color:blue;cursor: pointer;">' + car.ACTIVE + '</span>');
+                            }
+                            }
+                        ],
+                        datasource: new Array(),
+                        cellEdit: function (event, ui) {
+
+                        }
+                    });
+                }
+
+            }
+        });
+        function updateAction(id) {
+            var value = $('#drpFeatureType').puidropdown('getSelectedValue');
+            $.ajax({
+                type: "GET",
+                url: 'ajax-action/feature/update-feature.php?action=update&id=' + id + '&typeId=' + value,
+                dataType: "json",
+                context: this,
+                success: function (data) {
+                    //$('#mess1').puigrowl('show', [{severity: 'info', summary: 'Cell Edit', detail: 'Old Value: ' + ui.data + ', New Value: ' + ui.newValue + ' for ' + ui.field}]);
+                    if (data.mess == 4) {
+                        addMessage([{
+                            severity: 'error',
+                            summary: '',
+                            detail: 'Lỗi cập nhật trạng thái'
+                        }]);
+                    } else {
+                        $('#tblFeature').puidatatable({
+                            datasource: data
+                        });
+                        addMessage([{
+                            severity: 'info',
+                            summary: '',
+                            detail: 'Cập nhật trạng thái thành công'
+                        }]);
+
+                    }
+                }
+            });
+        }
+
+
+        document.title = 'Danh sách tính năng';
+        $('#dlgAddFeature').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 500,
+            height: 140,
+            modal: true,
+            buttons: [{
+                text: 'Đóng',
+                icon: 'fa-close',
+                click: function () {
+                    $('#dlgAddFeature').puidialog('hide');
+                }
+            },
+                {
+                    text: 'Thêm mới',
+                    icon: 'fa-plus',
+                    click: function () {
+                        var featureDes = $('#txtFeatureDes').val();
+                        var ordering = $('#txtFeatureOrdering').val();
+                        if (ordering % 1 !== 0) {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Thứ tự phải là số nguyên'}]);
+                        } else if (featureDes == null || featureDes == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập mô tả tính năng'}]);
+                        } else {
+                            var _form = $('#frmFeature');
+                            _form.unbind();
+                            _form.submit(function (e) {
+                                $('#loading').show();
+                                $('#dlgAddFeature').block({
+                                    message: null,
+                                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                                });
+                                var postData = $(this).serializeArray();
+                                var formURL = $(this).attr("action");
+                                $.ajax(
+                                    {
+                                        url: formURL,
+                                        type: "POST",
+                                        data: postData,
+                                        dataType: "json",
+                                        success: function (data, textStatus, jqXHR) {
+                                            $('#loading').hide();
+                                            $('#dlgAddFeature').unblock();
+                                            //$('#tblFeature').puidatatable('reload');
+                                            $('#tblFeature').puidatatable({
+                                                datasource: data
+                                            });
+                                            addMessage([{
+                                                severity: 'info',
+                                                summary: '',
+                                                detail: 'Thêm tính năng thành công'
+                                            }]);
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            addMessage([{
+                                                severity: 'error',
+                                                summary: '',
+                                                detail: 'Lỗi thêm tính năng'
+                                            }]);
+                                            $('#loading').hide();
+                                            $('#dlgAddFeature').unblock();
+                                        }
+                                    });
+                                e.preventDefault();	//STOP default action
+                            });
+                            $("#frmFeature").submit(); //SUBMIT FORM
+                        }
+
+                    }
+                }
+            ]
+        });
+        $('#add').puibutton({
+            icon: 'fa-external-link-square',
+            click: function () {
+                $("#frmFeature")[0].reset();
+                $('#dlgAddFeature').puidialog('show');
+            }
+        });
+    </script>
+    <style type="text/css">
+        .ui-dropdown {
+            width: 150px;
+        }
+
+        img#loading {
+            position: absolute;
+            display: none;
+            top: 40%;
+            right: 40%;
+            z-index: 10000;
+        }
+    </style>
+    <img id="loading" src='../../primeui/showcase/resources/images/loading.gif'/>
+
+    <div id="mess"/>
+    <div id="dlgAddFeature" title="Thêm tính năng">
+
+        <p>
+
+        <form name="frmFeature" id="frmFeature" action="ajax-action/feature/add-feature.php" method="POST">
+            <input type="hidden" name="txtFeatureTypeId" value="0" id="txtFeatureTypeId">
+
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Mô tả</div>
+                    <div class="ui-grid-col-2"><input id="txtFeatureDes" name="txtFeatureDes" type="text"
+                                                      style="width: 300px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Thứ tự</div>
+                    <div class="ui-grid-col-2"><input id="txtFeatureOrdering" name="txtFeatureOrdering" type="text"
+                                                      style="width: 70px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Hiển thị</div>
+                    <div class="ui-grid-col-2"><input id="txtFeatureActive" name="txtFeatureActive" type="checkbox"
+                                                      style="width: 300px;"/></div>
+                </div>
+            </div>
+        </form>
+        </p>
+    </div>
+    <div class="ContentSideSections">
+        <div id="titleFeature">
+            <ul>
+                <li style="width:20%;padding-top: 8px;font-size: 13px;font-weight:600;">DANH SÁCH TÍNH NĂNG</li>
+                <ul>
+        </div>
+        <div style="margin-top:5px;"></div>
+        <div id="pnlFeature" style="padding:10px;">
+            <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3">
+                        <select id="drpFeatureType" name="drpFeatureType">
+                                
+                            <option value="-1">--Chọn loại tính năng--</option>
+                        </select>
+                    </div>
+                    <div style="margin-left:5px;"></div>
+                    <div class="ui-grid-col-1">
+                        <button id="view" type="button">Xem</button>
+                    </div>
+                    <div style="margin-left:5px;"></div>
+                    <div class="ui-grid-col-1">
+                        <button id="add" type="button">Thêm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ContentSideSections Implementation">
+        <div id="tblFeature"></div>
+    </div>
+
+    <!--<div id="SourceContentSide" class="ContentSideSections Source">
+        dddđ
+    </div>-->
+
+    <script language="javascript">
+        SyntaxHighlighter.highlight();
+    </script>
+
+</div>

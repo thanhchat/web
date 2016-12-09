@@ -1,0 +1,232 @@
+<div>
+    <script type="text/javascript">
+
+        $('#titlePriceType').puimegamenu();
+        $('#add').puibutton({icon: 'fa-plus'});
+        $('#txtPriceTypeId').puiinputtext();
+        $('#txtPriceTypeDes').puiinputtext();
+        $('#mess').puigrowl();
+        addMessage = function (msg) {
+            $('#mess').puigrowl('show', msg);
+        };
+        $('#tblPriceType').puidatatable({
+            emptyMessage: 'Không có danh sách loại giá',
+            editMode: 'cell',
+            paginator: {
+                rows: 10
+            },
+            columns: [
+                {
+                    field: 'PRODUCT_PRICE_TYPE_ID', headerText: 'Mã loại giá', sortable: true
+                },
+                {field: 'DESCRIPTION_PRICE_TYPE', headerText: 'Mô tả', sortable: true, editor: 'input'}
+            ],
+            datasource: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/product-price-type/product-price-type.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            },
+            cellEdit: function (event, ui) {
+                var value = ui.newValue;
+                if (value == null || value == "") {
+                    addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập giá trị'}]);
+                    $('#tblPriceType').puidatatable('reload');
+                }else {
+                    $('#loading').show();
+                    $('#tblPriceType').block({
+                        message: null,
+                        overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                    });
+                    $.ajax({
+                        type: "GET",
+                        url: 'ajax-action/product-price-type/update-price-type.php?field=' + ui.field + '&val=' + ui.newValue + '&id=' + ui.data.PRODUCT_PRICE_TYPE_ID,
+                        dataType: "json",
+                        context: this,
+                        success: function (data) {
+                            $('#loading').hide();
+                            $('#tblPriceType').unblock();
+                            if (data.mess == 1) {
+                                addMessage([{
+                                    severity: 'error',
+                                    summary: '',
+                                    detail: 'Mã loại giá đã tồn tại'
+                                }]);
+                            } else if (data.mess == 2) {
+                                addMessage([{
+                                    severity: 'error',
+                                    summary: '',
+                                    detail: 'Sửa dữ liệu bị lỗi'
+                                }]);
+                            } else {
+                                $('#tblPriceType').puidatatable('reload');
+                                addMessage([{
+                                    severity: 'info',
+                                    summary: '',
+                                    detail: 'Cập nhật giá trị thành công'
+                                }]);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        document.title = 'Danh sách loại giá';
+        $('#dlgAddPriceType').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 500,
+            height: 110,
+            modal: true,
+            buttons: [{
+                text: 'Đóng',
+                icon: 'fa-close',
+                click: function () {
+                    $('#dlgAddPriceType').puidialog('hide');
+                }
+            },
+                {
+                    text: 'Thêm mới',
+                    icon: 'fa-plus',
+                    click: function () {
+                        var priceType = $('#txtPriceTypeId').val();
+                        var priceDes = $('#txtPriceTypeDes').val();
+                        if (priceType == null || priceType == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập mã loại giá'}]);
+                        } else if (priceDes == null || priceDes == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập mô tả loại giá'}]);
+                        } else {
+                            var _form = $('#frmPriceType');
+                            _form.unbind();
+                            _form.submit(function (e) {
+                                $('#loading').show();
+                                $('#dlgAddPriceType').block({
+                                    message: null,
+                                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                                });
+                                var postData = $(this).serializeArray();
+                                var formURL = $(this).attr("action");
+                                $.ajax(
+                                    {
+                                        url: formURL,
+                                        type: "POST",
+                                        data: postData,
+                                        dataType: "json",
+                                        success: function (data, textStatus, jqXHR) {
+                                            $('#loading').hide();
+                                            $('#dlgAddPriceType').unblock();
+                                            if (data.mess == 1) {
+                                                addMessage([{
+                                                    severity: 'error',
+                                                    summary: '',
+                                                    detail: 'Mã loại này đã tồn tại'
+                                                }]);
+                                            } else {
+                                                $('#tblPriceType').puidatatable('reload');
+                                                addMessage([{
+                                                    severity: 'info',
+                                                    summary: '',
+                                                    detail: 'Thêm loại giá thành công'
+                                                }]);
+                                            }
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            addMessage([{
+                                                severity: 'error',
+                                                summary: '',
+                                                detail: 'Lỗi thêm loại giá'
+                                            }]);
+                                            $('#loading').hide();
+                                            $('#dlgAddPriceType').unblock();
+                                        }
+                                    });
+                                e.preventDefault();	//STOP default action
+                            });
+                            $("#frmPriceType").submit(); //SUBMIT FORM
+                        }
+
+                    }
+                }
+            ]
+        });
+        $('#add').puibutton({
+            icon: 'fa-external-link-square',
+            click: function () {
+                $("#frmPriceType")[0].reset();
+                $('#dlgAddPriceType').puidialog('show');
+            }
+        });
+    </script>
+    <style type="text/css">
+        .ui-dropdown {
+            width: 150px;
+        }
+
+        img#loading {
+            position: absolute;
+            display: none;
+            top: 40%;
+            right: 40%;
+            z-index: 10000;
+        }
+    </style>
+    <img id="loading" src='../../primeui/showcase/resources/images/loading.gif'/>
+
+    <div id="mess"/>
+    <div id="dlgAddPriceType" title="Thêm loại giá">
+
+        <p>
+
+        <form name="frmPriceType" id="frmPriceType" action="ajax-action/product-price-type/product-price-type.php"
+              method="POST">
+            <input type="hidden" name="actionadd" value="add">
+
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Mã loại giá</div>
+                    <div class="ui-grid-col-2"><input id="txtPriceTypeId" name="txtPriceTypeId" type="text"
+                                                      style="width: 165px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Mô tả</div>
+                    <div class="ui-grid-col-2"><input id="txtPriceTypeDes" name="txtPriceTypeDes" type="text"
+                                                      style="width: 300px;"/></div>
+                </div>
+                </div>
+            </div>
+        </form>
+        </p>
+    </div>
+    <div class="ContentSideSections">
+        <div id="titlePriceType">
+            <ul>
+                <li style="width:20%;padding-top: 8px;font-size: 13px;font-weight:600;">DANH SÁCH LOẠI GIÁ</li>
+                <li style="width:80%;text-align:right">
+                    <button id="add" type="button">Thêm</button>
+                </li>
+                <ul>
+        </div>
+    </div>
+
+    <div class="ContentSideSections Implementation">
+        <div id="tblPriceType"></div>
+    </div>
+
+    <!--<div id="SourceContentSide" class="ContentSideSections Source">
+        dddđ
+    </div>-->
+
+    <script language="javascript">
+        SyntaxHighlighter.highlight();
+    </script>
+
+</div>
