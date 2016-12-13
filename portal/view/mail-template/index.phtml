@@ -1,0 +1,470 @@
+<div>
+    <script type="text/javascript">
+		function replace_string_vn(obj) 
+		{
+			var str;
+			if (eval(obj))
+				str = eval(obj).value;
+			else
+				str = obj;
+			str = str.toLowerCase();
+			str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+			str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+			str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+			str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+			str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+			str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+			str = str.replace(/đ/g, "d");
+			str= str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'| |\"|\&|\#|\[|\]|~|$|_/g,"-");  
+			/* tìm và thay thế các kí tự đặc biệt trong chuỗi sang kí tự - */
+			str= str.replace(/-+-/g,"-"); //thay thế 2- thành 1-  
+			str=str.replace(" ","");
+			str = str.replace(/^\-+|\-+$/g, "");
+			//cắt bỏ ký tự - ở đầu và cuối chuỗi 
+			eval(obj).value = str.toUpperCase();
+		}
+		function replace_string_vn_1(value) 
+		{
+			var str;
+			str = value;
+			str = str.toLowerCase();
+			str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+			str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+			str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+			str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+			str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+			str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+			str = str.replace(/đ/g, "d");
+			str= str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'| |\"|\&|\#|\[|\]|~|$|_/g,"-");  
+			/* tìm và thay thế các kí tự đặc biệt trong chuỗi sang kí tự - */
+			str= str.replace(/-+-/g,"-"); //thay thế 2- thành 1-  
+			str=str.replace(" ","");
+			str = str.replace(/^\-+|\-+$/g, "");
+			str=str.replace("-","");
+			//cắt bỏ ký tự - ở đầu và cuối chuỗi 
+			return str.toUpperCase();
+		}
+        var ms=$('#txtVariables').magicSuggest({
+            placeholder: 'Nhập danh sách biến'
+        });
+		var msEdit=$('#txtEditVariables').magicSuggest({
+            placeholder: 'Nhập danh sách biến'
+        });
+        $('#titleProduct').puimegamenu();
+        $('#add').puibutton({icon: 'fa-plus'});
+        $('#search').puibutton({icon: 'fa-search'});
+        $('#default').puipanel();
+        $('#txtName').puiinputtext();
+        $('#txtSubject').puiinputtext();
+        $('#txtVariables').puiinputtext();
+        $('#txtVariablesComment').puiinputtextarea();
+        $('#chkActive').puiswitch({onLabel:'Hiện',offLabel:'Ẩn'}); 
+		$('#txtEditName').puiinputtext();
+        $('#txtEditSubject').puiinputtext();
+        $('#txtEditVariables').puiinputtext();
+        $('#txtEditVariablesComment').puiinputtextarea();
+        $('#chkEditActive').puiswitch({onLabel:'Hiện',offLabel:'Ẩn'});
+        $('#mess').puigrowl();
+		
+        addMessage = function (msg) {
+            $('#mess').puigrowl('show', msg);
+        };
+		$(ms).on('blur', function(c){
+		  var res=this.getValue();
+			var variables = [];	
+			var strCommet='';
+			for(i=0;i<res.length;i++){
+				var str=replace_string_vn_1(res[i]);
+				variables.push(str);
+				strCommet+='{{'+str+'}} : <br>';
+			}
+			//alert(strCommet.replace(/<br\s*\/?>/g, '\n'));
+			ms.clear();
+			ms.setValue(variables);
+			$('#txtVariablesComment').val(strCommet.replace(/<br\s*\/?>/g, '\n'));
+		});
+        $('#dlgAddMail').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 950,
+            modal: true,
+            buttons: [{
+                text: 'Đóng',
+                icon: 'fa-close',
+                click: function () {
+                    $('#dlgAddMail').puidialog('hide');
+                }
+            }
+			/*,{
+                text: 'Xem trước',
+                icon: 'fa-close',
+                click: function () {
+                    alert(ms.getValue());
+                }
+            }*/,
+                {
+                    text: 'Thêm mới',
+                    icon: 'fa-plus',
+                    click: function () {
+                        var txtName = $.trim($('#txtName').val());
+                        var txtSubject = $.trim($('#txtSubject').val());
+                        //var txtLongDescription = $.trim($('#txtLongDescription').val());
+                        if (txtName == null || txtName == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập mã mail'}]);
+                        } else if (txtSubject == null || txtSubject == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập tiêu đề mail'}]);
+                        }else {
+                            var _form = $('#frmAddMail');
+                            _form.unbind();
+                            _form.submit(function (e) {
+								for (instance in CKEDITOR.instances) {
+									CKEDITOR.instances[instance].updateElement();
+								}
+								
+								var text = $.trim($('#txtVariablesComment').val());
+								text = text.replace(/\r?\n/g, '<br />');
+								$('#txtVariablesComment').val(text);
+                                $('#loading').show();
+                                $('#dlgAddMail').block({
+                                    message: null,
+                                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                                });
+                                var postData = $(this).serializeArray();
+                                var formURL = $(this).attr("action");
+                                $.ajax(
+                                    {
+                                        url: formURL,
+                                        type: "POST",
+                                        data: postData,
+                                        dataType: "json",
+                                        success: function (data, textStatus, jqXHR) {
+                                            $('#loading').hide();
+                                            $('#dlgAddMail').unblock();
+                                            if (data.mess == 1) {
+                                                addMessage([{
+                                                    severity: 'error',
+                                                    summary: '',
+                                                    detail: 'Ký hiệu mail này đã tồn tại'
+                                                }]);
+                                            } else {
+                                                $('#tblMail').puidatatable('reload');
+                                                addMessage([{
+                                                    severity: 'info',
+                                                    summary: '',
+                                                    detail: 'Thêm mail template thành công'
+                                                }]);
+                                            }
+                                            $('#dlgAddMail').puidialog('hide');
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            addMessage([{severity: 'error', summary: '', detail: 'Lỗi thêm mail template'}]);
+                                            $('#loading').hide();
+                                            $('#dlgAddMail').unblock();
+                                        }
+                                    });
+                                e.preventDefault();	//STOP default action
+                                //e.unbind();
+                            });
+                            $("#frmAddMail").submit(); //SUBMIT FORM
+                        }
+
+                    }
+                }
+            ]
+        });
+        $('#add').puibutton({
+            icon: 'fa-external-link-square',
+            click: function () {
+				ms.clear();
+				CKEDITOR.instances['txtLongDescription'].setData('');
+                $("#frmAddMail")[0].reset();
+                $('#dlgAddMail').puidialog('show');
+            }
+        });
+        $('#tblMail').puidatatable({
+            emptyMessage: 'Không có danh sách mail template',
+            paginator: {
+                rows: 10
+            },
+            columns: [
+                {
+                    field: 'NAME', headerText: 'Mã', sortable: true,content: function (car) {
+                    return $('<a href="#view/mail-template/template-detail.phtml?id=' + car.ID + '" style="text-decoration: underline;">' + car.NAME + '<a>')
+                }
+                },
+                {field: 'SUBJECT', headerText: 'Tiêu đề', sortable: true},
+                {field: 'COMMENT_VARIABLES', headerText: 'Danh sách biến',content: function (car) {
+                        return car.COMMENT_VARIABLES
+                }},
+                {
+                    field: 'STATUS', headerText: 'Trạng thái', sortable: true
+                }
+            ],
+            datasource: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/mail-template/mail-template.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            },
+			selectionMode: 'single'
+        });
+		
+		$('#dlgEditMail').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 950,
+            modal: true,
+            buttons: [{
+                text: 'Đóng',
+                icon: 'fa-close',
+                click: function () {
+                    $('#dlgEditMail').puidialog('hide');
+                }
+            },
+                {
+                    text: 'Cập nhật',
+                    icon: 'fa-plus',
+                    click: function () {
+                        var txtSubject = $.trim($('#txtEditSubject').val());
+                        //var txtLongDescription = $.trim($('#txtLongDescription').val());
+                        if (txtSubject == null || txtSubject == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập tiêu đề mail'}]);
+                        }else {
+                            var _form = $('#frmEditMail');
+                            _form.unbind();
+                            _form.submit(function (e) {
+								for (instance in CKEDITOR.instances) {
+									CKEDITOR.instances[instance].updateElement();
+								}
+								
+								var text = $.trim($('#txtEditVariablesComment').val());
+								text = text.replace(/\r?\n/g, '<br />');
+								$('#txtEditVariablesComment').val(text);
+                                $('#loading').show();
+                                $('#dlgEditMail').block({
+                                    message: null,
+                                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                                });
+                                var postData = $(this).serializeArray();
+                                var formURL = $(this).attr("action");
+                                $.ajax(
+                                    {
+                                        url: formURL,
+                                        type: "POST",
+                                        data: postData,
+                                        dataType: "json",
+                                        success: function (data, textStatus, jqXHR) {
+                                            $('#loading').hide();
+                                            $('#dlgEditMail').unblock();
+                                                $('#tblMail').puidatatable('reload');
+                                                addMessage([{
+                                                    severity: 'info',
+                                                    summary: '',
+                                                    detail: 'Cập nhật mail template thành công'
+                                                }]);
+											 $('#dlgEditMail').puidialog('hide');
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            addMessage([{
+                                                severity: 'error',
+                                                summary: '',
+                                                detail: 'Lỗi cập nhật danh mục'
+                                            }]);
+                                            $('#loading').hide();
+                                            $('#dlgEditMail').unblock();
+                                        }
+                                    });
+                                e.preventDefault();	//STOP default action
+                            });
+                            $("#frmEditMail").submit(); //SUBMIT FORM
+                        }
+
+                    }
+                }
+            ]
+        });
+		$('#cm').puicontextmenu({
+			target: $('#tblMail')
+		});
+		  window.ContextMenuDemo = {
+ 
+					view: function() {
+						var selections = $('#tblMail').puidatatable('getSelection');
+					$.ajax({
+								type: "GET",
+								url: 'ajax-action/mail-template/mail-template.php?detail='+selections[0].NAME,
+								dataType: "json",
+								context: this,
+								success: function (response) {
+											$('#txtEditName').val(response[0].NAME);
+											$('#txtEditSubject').val(response[0].SUBJECT);
+											//$('#txtEditVariables').val(response[0].VARIABLES);
+											var res=response[0].VARIABLES.split('#');
+											var variables = [];	
+											for(i=0;i<res.length;i++){
+												var str=res[i].replace('{{','');
+													str=str.replace('}}','');
+												variables.push(str);
+											}
+											msEdit.clear();
+											msEdit.setValue(variables);
+											if(response[0].COMMENT_VARIABLES!='' ||response[0].COMMENT_VARIABLES!=null)
+												$('#txtEditVariablesComment').val(response[0].COMMENT_VARIABLES.replace(/<br\s*\/?>/g, '\n'));
+											CKEDITOR.instances['txtEditLongDescription'].setData(response[0].DESCRIPTION);
+											$("#mail_id").val(selections[0].NAME);
+											if(response[0].STATUS=='Y')
+												$('#chkEditActive').puiswitch('check');
+											else
+												$('#chkEditActive').puiswitch('uncheck');
+											$('#dlgEditMail').puidialog('show');
+								}
+					 });
+					}
+				};
+    </script>
+    <script type="text/javascript">
+        CKEDITOR.replace('txtLongDescription');
+		CKEDITOR.replace('txtEditLongDescription');
+        CKEDITOR.config.width = "auto";
+        CKEDITOR.config.height = 250;
+        CKEDITOR.config.extraPlugins = 'sourcedialog';
+        CKEDITOR.config.placeholder = 'Nhập mô tả chi tiết mail';
+    </script>
+    <style type="text/css">
+        img#loading {
+            position: absolute;
+            display: none;
+            top: 40%;
+            right: 40%;
+            z-index: 10000;
+        }
+    </style>
+    <img id="loading" src='../../primeui/showcase/resources/images/loading.gif'/>
+    <div id="mess"/>
+    <div id="dlgViewMail" title="Xem trước">
+    </div>
+	<ul id="cm">
+		<li><a data-icon="fa-pencil" onclick="ContextMenuDemo.view()">Sửa</a></li>
+	</ul>
+    <div id="dlgAddMail" title="Thêm mail template">
+        <p>
+        <form name="frmAddMail" id="frmAddMail" action="ajax-action/mail-template/add-mail-template.php" method="POST">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Mã mail template</div>
+                    <div class="ui-grid-col-2">
+                        <input onkeyup="replace_string_vn(this);" id="txtName" name="txtName" type="text"
+                               style="width: 150px;"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Tiêu đề</div>
+                    <div class="ui-grid-col-2"><input id="txtSubject" name="txtSubject" type="text"
+                                                      style="width: 350px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Nội dung</div>
+                    <div class="ui-grid-col-10"><textarea id="txtLongDescription"
+                                                         name="txtLongDescription"></textarea>
+                    </div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Danh sách biến</div>
+                    <div class="ui-grid-col-8"><input id="txtVariables" name="txtVariables[]" type="text"
+                                                      style="width: 547px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Ghi chú biến</div>
+                    <div class="ui-grid-col-10"><textarea id="txtVariablesComment" rows="5" cols="65"
+                                                          name="txtVariablesComment"></textarea></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Trạng thái</div>
+                    <div class="ui-grid-col-2">
+                        <input id="chkActive" name="chkActive" type="checkbox"
+                            />
+                    </div>
+                </div>
+            </div>
+        </form>
+        </p>
+    </div>
+	<div id="dlgEditMail" title="Sửa mail template">
+        <p>
+        <form name="frmEditMail" id="frmEditMail" action="ajax-action/mail-template/update-mail-template.php" method="POST">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Mã mail template</div>
+                    <div class="ui-grid-col-2">
+                        <input disabled id="txtEditName" name="txtEditName" type="text"
+                               style="width: 150px;"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Tiêu đề</div>
+                    <div class="ui-grid-col-2"><input id="txtEditSubject" name="txtEditSubject" type="text"
+                                                      style="width: 350px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Nội dung</div>
+                    <div class="ui-grid-col-10"><textarea id="txtEditLongDescription"
+                                                         name="txtEditLongDescription"></textarea>
+                    </div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Danh sách biến</div>
+                    <div class="ui-grid-col-8"><input id="txtEditVariables" name="txtEditVariables[]" type="text"
+                                                      style="width: 547px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:15px">
+                    <div class="ui-grid-col-2">Ghi chú biến</div>
+                    <div class="ui-grid-col-10"><textarea id="txtEditVariablesComment" rows="5" cols="65"
+                                                          name="txtEditVariablesComment"></textarea></div>
+                </div>
+				<input name="mail_id" id="mail_id" type="hidden">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-2">Trạng thái</div>
+                    <div class="ui-grid-col-2">
+                        <input id="chkEditActive" name="chkEditActive" type="checkbox"
+                            />
+                    </div>
+                </div>
+            </div>
+        </form>
+        </p>
+    </div>
+    <div class="ContentSideSections">
+        <div id="titleProduct">
+            <ul>
+                <li style="width:20%;padding-top: 8px;font-size: 13px;font-weight:600;">DANH SÁCH MAIL TEMPLATE</li>
+                <li style="width:80%;text-align:right">
+                    <button id="add" type="button">Thêm mail mẫu</button>
+                </li>
+                <ul>
+        </div>
+    </div>
+
+    <div class="ContentSideSections Implementation">
+        <div id="tblMail"></div>
+    </div>
+
+    <!--<div id="SourceContentSide" class="ContentSideSections Source">
+        dddđ
+    </div>-->
+
+    <script language="javascript">
+        SyntaxHighlighter.highlight();
+    </script>
+
+</div>

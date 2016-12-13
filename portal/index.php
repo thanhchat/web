@@ -30,12 +30,14 @@ if (!$fp) {
     <link rel="stylesheet" type="text/css" href="../primeui/showcase/resources/css/perfect-scrollbar.css"/>
     <link rel="stylesheet" type="text/css" href="../primeui/showcase/resources/css/sh.css"/>
     <link rel="stylesheet" type="text/css" href="../primeui/showcase/resources/icons/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../primeui/showcase/resources/css/magicsuggest-min.css"/>
     <script type="text/javascript" src="../primeui/showcase/resources/js/jquery.min.js"></script>
     <script language="javascript" type="text/javascript" src="./ckeditor/ckeditor/ckeditor.js"></script>
     <script type="text/javascript" src="../primeui/showcase/resources/js/jquery-ui.js"></script>
     <script type="text/javascript" src="../primeui/showcase/resources/js/perfect-scrollbar.js"></script>
     <script type="text/javascript" src="../primeui/showcase/resources/js/site.js"></script>
     <script type="text/javascript" src="../primeui/showcase/resources/js/block.js"></script>
+    <script type="text/javascript" src="../primeui/showcase/resources/js/magicsuggest-min.js"></script>
 
 
     <!-- Dependencies of some widgets -->
@@ -91,6 +93,8 @@ if (!$fp) {
                   onclick="Showcase.changePageWithLink('view/category/index.phtml');"><span class="MainLinkText">Danh mục</span></span>
             <span id="SubMenu-Input" class="MenuSideMainLink bordersOfMenuSide"
                   onclick="Showcase.changePageWithLink('view/product-price-type/index.phtml');"><span class="MainLinkText">Loại giá</span></span>
+            <span id="SubMenu-Input" class="MenuSideMainLink bordersOfMenuSide"
+                  onclick="Showcase.changePageWithLink('view/mail-template/index.phtml');"><span class="MainLinkText">Mail template</span></span>
         </div>
     </div>
 
