@@ -131,7 +131,7 @@
             modal: true,
 			 buttons: [{
                 text: 'Xem',
-                icon: 'fa-weibo',
+                icon: 'fa-eye',
                 click: function () {
 					var content=CKEDITOR.instances['txtLongDescription'].getData();
 					var arrayView=msView.getValue();
@@ -194,7 +194,7 @@
             }
 			,{
                 text: 'Xem trước',
-                icon: 'fa-weibo',
+                icon: 'fa-eye',
                 click: function () {
 					var res=ms.getValue();
 					if(res.length>0){
@@ -342,7 +342,7 @@
             },
 			{
                 text: 'Xem trước',
-                icon: 'fa-weibo',
+                icon: 'fa-eye',
                 click: function () {
 					var res=msEdit.getValue();
 					if(res.length>0){
@@ -475,7 +475,6 @@
 		CKEDITOR.replace('txtEditLongDescription');
         CKEDITOR.config.width = "auto";
         CKEDITOR.config.height = 250;
-        CKEDITOR.config.extraPlugins = 'sourcedialog';
         CKEDITOR.config.placeholder = 'Nhập mô tả chi tiết mail';
     </script>
     <style type="text/css">

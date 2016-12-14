@@ -1,4 +1,4 @@
-"Moono" Skin
+"Moono_blue" Skin
 ====================
 
 This skin has been chosen for the **default skin** of CKEditor 4.x, elected from the CKEditor
@@ -37,14 +37,12 @@ it's not loaded until the first menu open up,
 
 Other parts:
 - **skin.js**: the only JavaScript part of the skin that registers the skin, its browser specific files and its icons and defines the Chameleon feature,
-- **icons/**: contains all skin defined icons,
 - **images/**: contains a fill general used images,
-- **dev/**: contains SVG source of the skin icons.
 
 License
 -------
 
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice: [GPL](http://www.gnu.org/licenses/gpl.html), [LGPL](http://www.gnu.org/licenses/lgpl.html) and [MPL](http://www.mozilla.org/MPL/MPL-1.1.html).
 

@@ -9,14 +9,14 @@ CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
-	
+	config.skin = 'office2013';
 	config.toolbar = [
 	{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
 	{ name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton'] },
 	{items: [ 'Bold', 'Italic', 'Underline', 'Strike'] },{name:'smile',items:['Smiley', 'SpecialChar' ]},
 	{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl' ] },
-	{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule'] },{ name: 'links', items: [ 'Link', 'Unlink' ] },{ name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
-	{ name: 'colors', items: [ 'TextColor', 'BGColor', 'Source' ] }
+	{ name: 'insert', items: [ 'Image','Table', 'HorizontalRule'] },{ name: 'links', items: [ 'Link', 'Unlink' ] },{ name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
+	{ name: 'colors', items: [ 'TextColor', 'BGColor' ,'Source'] }
 ];
 
 	//config.width = 780;
@@ -39,11 +39,11 @@ CKEDITOR.editorConfig = function( config ) {
 	{ name: 'others' }
 ];*/
 	config.filebrowserBrowseUrl = str+'/ckfinder/ckfinder.html';
-            config.filebrowserImageBrowseUrl = str+'/ckfinder/ckfinder.html?type=Images';
-            config.filebrowserFlashBrowseUrl = str+'/ckfinder/ckfinder.html?type=Flash';
-            config.filebrowserUploadUrl = str+'/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files';
-            config.filebrowserImageUploadUrl = str+'/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images';
-            config.filebrowserFlashUploadUrl = str+'/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash';
+            //config.filebrowserImageBrowseUrl = str+'/ckfinder/ckfinder.html?type=Images';
+            //config.filebrowserFlashBrowseUrl = str+'/ckfinder/ckfinder.html?type=Flash';
+            //config.filebrowserUploadUrl = str+'/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files';
+            //config.filebrowserImageUploadUrl = str+'/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images';
+            //config.filebrowserFlashUploadUrl = str+'/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash';
             config.filebrowserWindowWidth = 700;
             config.filebrowserWindowHeight = 600
 };
