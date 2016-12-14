@@ -50,7 +50,7 @@
 
 /*  ----------------------------------------------------------------------------------------------------- */
 
-body{margin:0px;height:100%;overflow-x:hidden;overflow-y:auto;/* background-color:#20272a; */font-family: 'exoregular', "Trebuchet MS", Arial, Helvetica, sans-serif;}
+body{margin:0px;height:100%;overflow-x:hidden;overflow-y:auto;/* background-color:#20272a; */font-family: 'exoregular', "Trebuchet MS", Arial, Helvetica, sans-serif;font-size:14px;}
 
 #LOGOTEXTSIDE{display:block;width:290px; float:left; height:74px; z-index:999; background-image:url(../images/logoCircuitLines.svg); background-repeat:no-repeat; background-position:center right;
               margin:-20px 0px 0px 0px; padding-top:25px; line-height:30px;}
@@ -58,7 +58,7 @@ body{margin:0px;height:100%;overflow-x:hidden;overflow-y:auto;/* background-colo
 .logoBlueText{color:#25aae1;}
 
 /* menu side style*/
-#MENUSIDE{width:85px;float:left;/* background-color:#313b3f; */border-right:solid 1px #151d21;overflow:hidden;width: 200px;position: fixed;}
+#MENUSIDE{width:85px;float:left;/* background-color:#313b3f; */border-right: solid 1px #2789b9;overflow:hidden;width: 200px;position: fixed;background: aliceblue;}
 #MENUSIDEindent{width:100%; height:auto;}
 #LOGO{height: 130px;display:block;padding: 0px 0 5px 0px;z-index:997;/* background-color:#313b3f; */margin-left: -10px;}
 #LOGO img{width: 195px;height: 120px;position:absolute;}
@@ -66,13 +66,14 @@ body{margin:0px;height:100%;overflow-x:hidden;overflow-y:auto;/* background-colo
 .MenuSideMainLink input{ padding:6px; background-color:#354044; outline:none; border:0px; border:none; color:#9ba5ac; border-radius:20px;
                          -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.5); -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.5); box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.5);}
 .MenuSideMainLinkDark{/* background-color:#20282b !important; */-webkit-transition: all 0.5s ease;-moz-transition: all 0.5s ease;-ms-transition: all 0.5s ease;-o-transition: all 0.5s ease;transition: all 0.5s ease;}
-.MenuSideMainLink:hover{background-color:#20282b; -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -ms-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease;}
+.MenuSideMainLink:hover{color:#ffffff;background-color:#006699; -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -ms-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease;}
 .MenuSideMainLink img{width:30px; height:auto; float:left;}
 .MainLinkText{color: #65bcf9;font-size:20px;margin: 2px 0px 0px -10px;display:block;}
+.MainLinkText:hover{color: #ffffff;font-size:20px;margin: 2px 0px 0px -10px;display:block;}
 
 .SubMenuLinkContainer{width:auto;padding:20px;overflow:hidden;/* background-color:#20282b; */display: none;}
-.SubMenuLink{width: 100%;display:inline-block;float:left;padding: 5px 0px;cursor:pointer;border-radius:4px;-webkit-border-radius:4px;color: rgb(64, 97, 109);font-size: 16px;}
-.SubMenuLink:hover{background-color:#101517; color:#8dc5d9;}
+.SubMenuLink{width: 100%;display:inline-block;float:left;padding: 5px;cursor:pointer;border-radius:4px;-webkit-border-radius:4px;color: rgb(64, 97, 109);font-size: 16px;}
+.SubMenuLink:hover{background-color:#006699; color:#ffffff;}
 
 .SubMenuLinkSamples{width:50%; display:inline-block; float:left; padding:6px 0px; cursor:pointer; border-radius:4px; -webkit-border-radius:4px; color:#659eb3; font-size:14px;
 }
@@ -87,10 +88,10 @@ body{margin:0px;height:100%;overflow-x:hidden;overflow-y:auto;/* background-colo
 
 /* content side style*/
 #CONTENTSIDE{width:auto;overflow:hidden;z-index:1;margin-left: 200px;background-color:#eff3f6;}
-#CONTENTSIDEindent{width:100%;height:auto;}
+#CONTENTSIDEindent{width:100%;height:auto;background:white;}
 .ContentSideSections{display:block;/* border-bottom:solid 1px #bcc7cf; */padding: 10px;}
 .MOBILE .ContentSideSections{padding:14px 24px;}
-#PFTopLinksCover{background-color:#eff3f6;}
+#PFTopLinksCover{background-color:#ffffff;}
 #PFMobileTopLinksCover{ position:inherit;}
 .PFTopLinks{width:80px; display:inline-block; text-align:center; padding:5px; border-radius:5px;  font-size:12px; -webkit-border-radius:5px; margin-top:-10px; -webkit-transition: all 0.5s ease; 
             -moz-transition: all 0.5s ease; -ms-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease; overflow:hidden;}
@@ -100,7 +101,7 @@ body{margin:0px;height:100%;overflow-x:hidden;overflow-y:auto;/* background-colo
                   -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -ms-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease; overflow:hidden;}
 .PFTopLinks img, .PFTopLinksMobile img{width:80%; height:55px;}
 .PFGrayText{color:#aab7c1;}
-.PFDarkText{color: #0491ca;}
+.PFDarkText{color: #f3473d;}
 
 .PropertyBox{width:27%; height:280px; float:left; padding:3%; overflow:hidden; text-align:center; border-radius:5px; -webkit-border-radius:5px; display:block;
              -webkit-transition: all 0.5s ease; -moz-transition: all 0.5s ease; -ms-transition: all 0.5s ease; -o-transition: all 0.5s ease; transition: all 0.5s ease;}

@@ -76,7 +76,7 @@ if (!$fp) {
     <div id="MENUSIDE">
         <div id="MENUSIDEindent">
 				<span id="LOGO" class="bordersOfMenuSide">
-                        <a href=""><img alt="logo" src="../primeui/showcase/resources/images/admin.png" width="150px"
+                        <a href=""><img alt="logo" src="../primeui/showcase/resources/images/admin2.png" width="150px"
                                         height="70px"/></a>
                     </span>
             <span id="SubMenu-PrimeElements" class="MenuSideMainLink bordersOfMenuSide"
@@ -154,8 +154,8 @@ if (!$fp) {
             </div>
             <!-- header bar end-->
 
-            <div id="ContentPagePortal">
-
+            <div id="ContentPagePortal" style="background: white;">
+				<div style="text-align:center;margin-top:20%;"><img alt="logo" src="../primeui/showcase/resources/images/admin_home.png" /></div>
             </div>
 
 
