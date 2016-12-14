@@ -1,4 +1,4 @@
-﻿<table style="border: solid 1px; border-color: #ADCE97; width: 722px;">
+﻿<table style="border: solid 1px; border-color: #ADCE97; width: 750px;">
 <tr>
         <td style="border-bottom: dotted 1px; border-color: #ADCE97;width: 361px; padding:15px"><img src="http://bapshop.tk/templates/default/images/home/logo.png" alt="lunshop - Sản phẩm chất lượng dành cho bạn"></td>
 		<td style="text-align: right;padding: 9px;border-bottom: dotted 1px; border-color: #ADCE97;width: 361px;">Điện thoại hỗ trợ: 1800 6070</td>
@@ -8,7 +8,7 @@
         <table>
 			<tr>
 				<td>
-				<div style="margin: 5px 0px 5px 0px;">
+				<div style="margin: 5px;padding:10px;">
 					{{CONTENT}} <!-- This will be replaced with final $message data -->
 				</div>
 				</td>

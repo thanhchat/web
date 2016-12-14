@@ -1,5 +1,6 @@
 <div>
     <script type="text/javascript">
+		document.title = 'Danh sách mail template';
 		function replace_string_vn(obj) 
 		{
 			var str;
@@ -83,6 +84,56 @@
 			ms.setValue(variables);
 			$('#txtVariablesComment').val(strCommet.replace(/<br\s*\/?>/g, '\n'));
 		});
+		$('#dlgViewMail').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 850,
+			height:200,
+            modal: true,
+			 buttons: [{
+                text: 'Xem',
+                icon: 'fa-weibo',
+                click: function () {
+					var content=CKEDITOR.instances['txtLongDescription'].getData();
+					var arrayView=msView.getValue();
+					var arrayValue=msValueView.getValue();
+					if(arrayView.length==arrayValue.length||arrayView.length==0){
+						for(i=0;i<arrayView.length;i++){
+							content=content.replace('{{'+arrayView[i]+'}}',arrayValue[i]);
+						}
+						$.get('template-web.tbl', function(data) {
+							 data=data.replace("{{CONTENT}}",content);
+							 $('#viewFinal').html(data);
+							 $('#dlgViewMailFinal').puidialog('show');
+						});
+					}else if(arrayView.length<arrayValue.length){
+						addMessage([{severity: 'error', summary: '', detail: 'Giá trị biến nhập vào lớn hơn số biến'}]);
+					}else if(arrayView.length>arrayValue.length){
+						addMessage([{severity: 'error', summary: '', detail: 'Chưa nhập đủ giá trị cho từng biến'}]);
+					}
+                   // $('#dlgViewMail').puidialog('hide');
+                }
+            }]
+		});
+		$('#dlgViewMailFinal').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 850,
+            modal: true
+		});
+		var msView=$('#txtViewVariables').magicSuggest({
+						placeholder: 'Danh sách biến',
+							disabled: true
+		});
+		var msValueView=$('#txtValueViewVariables').magicSuggest({
+							placeholder: 'Nhập giá trị cho biến tương ứng'
+						});
         $('#dlgAddMail').puidialog({
             showEffect: 'fade',
             hideEffect: 'fade',
@@ -98,13 +149,24 @@
                     $('#dlgAddMail').puidialog('hide');
                 }
             }
-			/*,{
+			,{
                 text: 'Xem trước',
                 icon: 'fa-close',
                 click: function () {
-                    alert(ms.getValue());
+					var res=ms.getValue();
+					if(res.length>0){
+						var variables = [];	
+						for(i=0;i<res.length;i++){
+							var str=replace_string_vn_1(res[i]);
+							variables.push(str);
+						}
+						msView.clear();
+						msValueView.clear();
+						msView.setValue(variables);
+					}
+                    $('#dlgViewMail').puidialog('show');
                 }
-            }*/,
+            },
                 {
                     text: 'Thêm mới',
                     icon: 'fa-plus',
@@ -352,7 +414,9 @@
     </style>
     <img id="loading" src='../../primeui/showcase/resources/images/loading.gif'/>
     <div id="mess"/>
-    <div id="dlgViewMail" title="Xem trước">
+	<div id="dlgViewMailFinal" title="Xem trước mail"><div id="viewFinal"></div></div>
+    <div id="dlgViewMail" title="Nhập biến">
+		<div id="listVariables"><span style="width:100px;color:red;padding:10px;">Danh sách biến</span><input id="txtViewVariables" name="txtViewVariables[]" type="text" style="width: 820px;"/><input style="margin-top:35px;" id="txtValueViewVariables" name="txtValueViewVariables[]" type="text" style="width: 647px;"/></div>
     </div>
 	<ul id="cm">
 		<li><a data-icon="fa-pencil" onclick="ContextMenuDemo.view()">Sửa</a></li>
