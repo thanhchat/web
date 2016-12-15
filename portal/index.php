@@ -95,6 +95,8 @@ if (!$fp) {
                   onclick="Showcase.changePageWithLink('view/product-price-type/index.phtml');"><span class="MainLinkText">Loại giá</span></span>
             <span id="SubMenu-Input" class="MenuSideMainLink bordersOfMenuSide"
                   onclick="Showcase.changePageWithLink('view/mail-template/index.phtml');"><span class="MainLinkText">Mail template</span></span>
+			<span id="SubMenu-Input" class="MenuSideMainLink bordersOfMenuSide"
+                  onclick="Showcase.changePageWithLink('view/supplier/index.phtml');"><span class="MainLinkText">Nhà cung cấp</span></span>
         </div>
     </div>
 
@@ -149,6 +151,8 @@ if (!$fp) {
                     </optgroup>
 					<option value="view/product-price-type/index.phtml">Loại giá</option>
 					<option value="view/category/index.phtml">Danh mục</option>
+					<option value="view/mail-template/index.phtml">Mail template</option>
+					<option value="view/supplier/index.phtml">Nhà cung cấp</option>
                 </select>
 
             </div>

@@ -9,7 +9,7 @@
 //include_once("../connections/class.db.php");
 class product extends database
 {
-
+	
     function checkProductByManufactureId($manufactureId)
     {
         $sql = "SELECT * FROM PRODUCT WHERE MANUFACTURER_PARTY_ID=:manufactureId";
@@ -154,6 +154,22 @@ class product extends database
 			$sql="UPDATE product SET FEATURE_ID=:feature WHERE PRODUCT_ID=:productId";
 			$this->query($sql);
             $this->bind(':feature',$feature);
+            $this->bind(':productId', $idProduct);
+			$this->execute();
+            $this->endTransaction();
+			return true;
+        } catch (PDOException $e) {
+            $this->cancelTransaction();
+            throw new Exception($e->getMessage());
+			return false;
+        }
+    }
+	function updateSupplier($supplier,$idProduct){
+		try {
+			$this->beginTransaction();
+			$sql="UPDATE product SET SUPPLIER=:supplier WHERE PRODUCT_ID=:productId";
+			$this->query($sql);
+            $this->bind(':supplier',$supplier);
             $this->bind(':productId', $idProduct);
 			$this->execute();
             $this->endTransaction();

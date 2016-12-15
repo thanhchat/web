@@ -44,14 +44,15 @@ class MailTemplate extends database
         }
     }
 
-	function updateMailTemplate($id,$subject,$description,$variables,$commentVariables,$status)
+	function updateMailTemplate($id,$subject,$description,$variables,$commentVariables,$status,$nameNew)
     {
 		$i=0;
         try {
             $this->beginTransaction();
-            $sql = "UPDATE email_template SET SUBJECT=:subject, DESCRIPTION=:description, VARIABLES=:variables,COMMENT_VARIABLES=:commentVariables, STATUS=:status WHERE NAME=:name";
+            $sql = "UPDATE email_template SET NAME=:nameNew,SUBJECT=:subject, DESCRIPTION=:description, VARIABLES=:variables,COMMENT_VARIABLES=:commentVariables, STATUS=:status WHERE NAME=:name";
             $this->query($sql);
             $this->bind(':name', $id);
+            $this->bind(':nameNew', $nameNew);
             $this->bind(':description', $description);
             $this->bind(':subject', $subject);
             $this->bind(':status', $status);

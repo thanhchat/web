@@ -5,6 +5,7 @@ include_once("../../../connections/class.db.php");
 include_once("../../model/mail-template.php");
 $objMail = new MailTemplate();
 $array = array();
+$txtName = $_POST['txtEditName'];
 $name = $_POST['mail_id'];
 $txtSubject = $_POST['txtEditSubject'];
 $txtLongDescription = $_POST['txtEditLongDescription'];
@@ -18,7 +19,11 @@ if(count($Variables)>0){
 	for($i=1;$i<count($Variables);$i++)
 		$strVariables.='#{{'.$Variables[$i].'}}';
 }
-$objMail->updateMailTemplate($name,$txtSubject,$txtLongDescription,$strVariables,$txtVariablesComment,$chkActive);
-$json = json_encode($array);
+$check=$objMail->getMailTemplateByName($txtName);
+if($check!=null&&strcmp($check[0]['NAME'],$name)!=0)
+	$data['mess']=1;
+else
+	$objMail->updateMailTemplate($name,$txtSubject,$txtLongDescription,$strVariables,$txtVariablesComment,$chkActive,$txtName);
+$json = json_encode($data);
 echo($json);
 ?>

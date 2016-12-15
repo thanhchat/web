@@ -4,7 +4,7 @@ include_once("../../../configs/application.php");
 include_once("../../../connections/class.db.php");
 include_once("../../model/mail-template.php");
 $objMail = new MailTemplate();
-$txtName = $_POST['txtName'];
+$txtName = $_POST['txtEditName'];
 $txtSubject = $_POST['txtSubject'];
 $txtLongDescription = $_POST['txtLongDescription'];
 $txtVariablesComment = $_POST['txtVariablesComment'];

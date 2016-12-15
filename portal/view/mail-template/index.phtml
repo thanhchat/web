@@ -394,19 +394,28 @@
                                         success: function (data, textStatus, jqXHR) {
                                             $('#loading').hide();
                                             $('#dlgEditMail').unblock();
-                                                $('#tblMail').puidatatable('reload');
-                                                addMessage([{
-                                                    severity: 'info',
-                                                    summary: '',
-                                                    detail: 'Cập nhật mail template thành công'
-                                                }]);
-											 $('#dlgEditMail').puidialog('hide');
+											if(data.mess==1){
+													addMessage([{
+													severity: 'error',
+													summary: '',
+													detail: 'Mã mail này đã tồn tại'
+												}]);
+												$('#txtEditVariablesComment').val($('#txtEditVariablesComment').val().replace(/<br\s*\/?>/g, '\n'));
+											}else{
+												$('#tblMail').puidatatable('reload');
+												addMessage([{
+														severity: 'info',
+														summary: '',
+														detail: 'Cập nhật mail template thành công'
+													}]);
+												 $('#dlgEditMail').puidialog('hide');
+											}
                                         },
                                         error: function (jqXHR, textStatus, errorThrown) {
                                             addMessage([{
                                                 severity: 'error',
                                                 summary: '',
-                                                detail: 'Lỗi cập nhật danh mục'
+                                                detail: 'Lỗi cập nhật mail template'
                                             }]);
                                             $('#loading').hide();
                                             $('#dlgEditMail').unblock();
@@ -560,7 +569,7 @@
                 <div class="ui-grid-row" style="margin-top:8px">
                     <div class="ui-grid-col-2">Mã mail template</div>
                     <div class="ui-grid-col-2">
-                        <input disabled id="txtEditName" name="txtEditName" type="text"
+                        <input onkeyup="replace_string_vn(this);" id="txtEditName" name="txtEditName" type="text"
                                style="width: 150px;"/>
                     </div>
                 </div>

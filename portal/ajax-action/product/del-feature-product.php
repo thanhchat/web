@@ -156,6 +156,8 @@ include_once("../../../configs/application.php");
 include_once("../../../connections/class.db.php");
 include_once("../../model/product.php");
 include_once("../../model/feature.php");
+include_once("../../model/product-price.php");
+$objProductPrice=new productprice();
 $objFeature = new feature();
 $objProduct = new product();
 $array = array();
@@ -169,46 +171,55 @@ if($value!=''&&$idProduct!=0){
 	//
 	$product=$objProduct->getProductFeatureById($idProduct);
 	if($type=='fearure'){
-		
 		$arrayFeature=explode('@',$value);
-		//0: feature;1: featureType
-		$feature=$product[0]['FEATURE_ID'];
-		$featureType=explode('@',$product[0]['FEATURE_TYPE_ID']);
-		$arrayFeatureGetToDb=explode('@',$feature);
-		$del=-1;
-		foreach($arrayFeatureGetToDb as $k=>$v){
-			if(contains($v,":".$arrayFeature[0])){
-				$arrayFeatureGetToDb[$k]=str_replace(":".$arrayFeature[0],'',$v);
-			}else{
-				if(contains($v,$arrayFeature[0])){
-					$arrayCheck=explode(':',$v);
-					if(count($arrayCheck)>1)
-						$arrayFeatureGetToDb[$k]=str_replace($arrayFeature[0].":",'',$v);
-					else
-						$arrayFeatureGetToDb[$k]=str_replace($arrayFeature[0],'',$v);
+		$flag=0;
+		$checkPriceFeature=$objProductPrice->checkProductPriceByIdAndFeature($idProduct,$arrayFeature[0]);
+		$arrayProductJunior=$objProduct->getProductJuniorById($idProduct);
+		foreach($arrayProductJunior as $k=>$v){
+			if(contains($v['FEATURE_ID'],$arrayFeature[0])&&($v['QUANTITY_UOM_ID']!=0||$v['QUANTITY_INCLUDED']!=0))
+				$flag=1;
+		}
+		if($checkPriceFeature==0&&$flag==0){
+			//0: feature;1: featureType
+			$feature=$product[0]['FEATURE_ID'];
+			$featureType=explode('@',$product[0]['FEATURE_TYPE_ID']);
+			$arrayFeatureGetToDb=explode('@',$feature);
+			$del=-1;
+			foreach($arrayFeatureGetToDb as $k=>$v){
+				if(contains($v,":".$arrayFeature[0])){
+					$arrayFeatureGetToDb[$k]=str_replace(":".$arrayFeature[0],'',$v);
+				}else{
+					if(contains($v,$arrayFeature[0])){
+						$arrayCheck=explode(':',$v);
+						if(count($arrayCheck)>1)
+							$arrayFeatureGetToDb[$k]=str_replace($arrayFeature[0].":",'',$v);
+						else
+							$arrayFeatureGetToDb[$k]=str_replace($arrayFeature[0],'',$v);
+					}
+				}
+				if($arrayFeatureGetToDb[$k]==''){
+					$del=$k;
+					unset($arrayFeatureGetToDb[$k]);
 				}
 			}
-			if($arrayFeatureGetToDb[$k]==''){
-				$del=$k;
-				unset($arrayFeatureGetToDb[$k]);
+			
+			if($del>=0)
+				unset($featureType[$del]);
+			$strFeatureEnd=implode("@",$arrayFeatureGetToDb);
+			$strFeatureTypeEnd=implode("@",$featureType);
+			$objProduct->updateFeatureAndFeatureType($strFeatureEnd,$strFeatureTypeEnd,$idProduct);
+			$listProductFeature=$objProduct->getProductJuniorById($idProduct);
+			foreach($listProductFeature as $k=>$v){
+				if(contains($v['FEATURE_ID'],$arrayFeature[0])){
+					$objProduct->deleteProductFeatureJunior($v['PRODUCT_ID']);
+				}
 			}
+			buildProductFeature($idProduct,$objProduct);
+		}else{
+			$array['error']=1;
 		}
-		
-		if($del>=0)
-			unset($featureType[$del]);
-		$strFeatureEnd=implode("@",$arrayFeatureGetToDb);
-		$strFeatureTypeEnd=implode("@",$featureType);
-		$objProduct->updateFeatureAndFeatureType($strFeatureEnd,$strFeatureTypeEnd,$idProduct);
-		$listProductFeature=$objProduct->getProductJuniorById($idProduct);
-		foreach($listProductFeature as $k=>$v){
-			if(contains($v['FEATURE_ID'],$arrayFeature[0])){
-				$objProduct->deleteProductFeatureJunior($v['PRODUCT_ID']);
-			}
-		}
-		buildProductFeature($idProduct,$objProduct);
-		
 	}
-	if($type=='fearureType'){
+	if($type=='fearureType'){//del all
 		$featureType=explode('@',$product[0]['FEATURE_TYPE_ID']);
 		$feature=$product[0]['FEATURE_ID'];
 		$arrayFeatureGetToDb=explode('@',$feature);

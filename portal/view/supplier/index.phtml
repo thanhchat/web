@@ -1,0 +1,246 @@
+<div>
+    <script type="text/javascript">
+
+        $('#titleSupplier').puimegamenu();
+        $('#add').puibutton({icon: 'fa-plus'});
+        $('#txtSupplierAddress').puiinputtext();
+        $('#txtSupplierComment').puiinputtext();
+        $('#txtSupplierName').puiinputtext();
+        $('#txtSupplierPhone').puiinputtext();
+        $('#txtSupplierEmail').puiinputtext();
+        $('#mess').puigrowl();
+        addMessage = function (msg) {
+            $('#mess').puigrowl('show', msg);
+        };
+        $('#tblSupplier').puidatatable({
+            emptyMessage: 'Không có danh sách nhà cung cấp',
+            editMode: 'cell',
+            paginator: {
+                rows: 10
+            },
+            columns: [
+                {
+                    field: 'SUPPLIER_ID', headerText: 'Mã nhà cung cấp', sortable: true,filter:true,headerStyle:'width:150px'
+                },
+                {field: 'SUPPLIER_NAME', headerText: 'Tên', sortable: true, editor: 'input',filter:true},
+                {field: 'PHONE', headerText: 'Số điện thoại', sortable: true, editor: 'input',filter:true,headerStyle:'width:160px',content:function(supplier){return '0'+supplier.PHONE;}},
+                {field: 'EMAIL', headerText: 'Email', sortable: true, editor: 'input',filter:true},
+                {field: 'ADDRESS', headerText: 'Địa chỉ', sortable: true, editor: 'input',filter:true},
+                {field: 'COMMENT', headerText: 'Ghi chú', editor: 'input'}
+            ],
+            datasource: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/supplier/supplier.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            },
+            cellEdit: function (event, ui) {
+                var value = ui.newValue;
+                if (value == null || value == "") {
+                    addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập giá trị'}]);
+                    $('#tblSupplier').puidatatable('reload');
+                } else if (ui.field == 'PHONE' && value % 1 !== 0) {
+                    addMessage([{severity: 'warn', summary: '', detail: 'Số điện thoại phải là số nguyên'}]);
+                    $('#tblSupplier').puidatatable('reload');
+                } else {
+                    $('#loading').show();
+                    $('#tblSupplier').block({
+                        message: null,
+                        overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                    });
+                    $.ajax({
+                        type: "GET",
+                        url: 'ajax-action/supplier/update-supplier.php?field=' + ui.field + '&val=' + ui.newValue + '&id=' + ui.data.SUPPLIER_ID,
+                        dataType: "json",
+                        context: this,
+                        success: function (data) {
+                            $('#loading').hide();
+                            $('#tblSupplier').unblock();
+                            if (data.mess == 2) {
+                                addMessage([{
+                                    severity: 'error',
+                                    summary: '',
+                                    detail: 'Sửa dữ liệu bị lỗi'
+                                }]);
+                            } else {
+                                $('#tblSupplier').puidatatable('reload');
+                                addMessage([{
+                                    severity: 'info',
+                                    summary: '',
+                                    detail: 'Cập nhật giá trị thành công'
+                                }]);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        document.title = 'Danh sách nhà cung cấp';
+        $('#dlgAddSupplier').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 600,
+            height: 200,
+            modal: true,
+            buttons: [{
+                text: 'Đóng',
+                icon: 'fa-close',
+                click: function () {
+                    $('#dlgAddSupplier').puidialog('hide');
+                }
+            },
+                {
+                    text: 'Thêm mới',
+                    icon: 'fa-plus',
+                    click: function () {
+                        var supplierName = $('#txtSupplierName').val();
+                        var phone = $('#txtSupplierPhone').val();
+                        if (phone % 1 !== 0) {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Số điện thoại phải là số nguyên'}]);
+                        } else if (supplierName == null || supplierName == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập tên nhà cung cấp'}]);
+                        } else if (phone == null || phone == "") {
+                            addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập số điện thoại nhà cung cấp'}]);
+                        } else {
+                            var _form = $('#frmSupplier');
+                            _form.unbind();
+                            _form.submit(function (e) {
+                                $('#loading').show();
+                                $('#dlgAddSupplier').block({
+                                    message: null,
+                                    overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                                });
+                                var postData = $(this).serializeArray();
+                                var formURL = $(this).attr("action");
+                                $.ajax(
+                                    {
+                                        url: formURL,
+                                        type: "POST",
+                                        data: postData,
+                                        dataType: "json",
+                                        success: function (data, textStatus, jqXHR) {
+                                            $('#loading').hide();
+                                            $('#dlgAddSupplier').unblock();
+                                                $('#tblSupplier').puidatatable('reload');
+                                                addMessage([{
+                                                    severity: 'info',
+                                                    summary: '',
+                                                    detail: 'Thêm nhà cung cấp thành công'
+                                                }]);
+												$('#dlgAddSupplier').puidialog('hide');
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            addMessage([{
+                                                severity: 'error',
+                                                summary: '',
+                                                detail: 'Lỗi thêm nhà cung cấp'
+                                            }]);
+                                            $('#loading').hide();
+                                            $('#dlgAddSupplier').unblock();
+                                        }
+                                    });
+                                e.preventDefault();	//STOP default action
+                            });
+                            $("#frmSupplier").submit(); //SUBMIT FORM
+                        }
+
+                    }
+                }
+            ]
+        });
+        $('#add').puibutton({
+            icon: 'fa-external-link-square',
+            click: function () {
+                $("#frmSupplier")[0].reset();
+                $('#dlgAddSupplier').puidialog('show');
+            }
+        });
+    </script>
+    <style type="text/css">
+        .ui-dropdown {
+            width: 150px;
+        }
+
+        img#loading {
+            position: absolute;
+            display: none;
+            top: 40%;
+            right: 40%;
+            z-index: 10000;
+        }
+    </style>
+    <img id="loading" src='../../primeui/showcase/resources/images/loading.gif'/>
+
+    <div id="mess"/>
+    <div id="dlgAddSupplier" title="Thêm nhà cung cấp">
+
+        <p>
+
+        <form name="frmSupplier" id="frmSupplier" action="ajax-action/supplier/add-supplier.php"
+              method="POST">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3" style="font-weight:700">Tên nhà cung cấp</div>
+                    <div class="ui-grid-col-2"><input id="txtSupplierName" name="txtSupplierName" type="text"
+                                                      style="width: 420px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3" style="font-weight:700">Điện thoại</div>
+                    <div class="ui-grid-col-2"><input id="txtSupplierPhone" name="txtSupplierPhone" type="text"
+                                                      style="width: 140px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3" style="font-weight:700">Email</div>
+                    <div class="ui-grid-col-2"><input id="txtSupplierEmail" name="txtSupplierEmail"
+                                                      type="text"
+                                                      style="width: 300px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3" style="font-weight:700">Địa chỉ</div>
+                    <div class="ui-grid-col-2"><input id="txtSupplierAddress" name="txtSupplierAddress"
+                                                      type="text"
+                                                      style="width: 420px;"/></div>
+                </div>
+				<div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3" style="font-weight:700">Ghi chú</div>
+                    <div class="ui-grid-col-2"><input id="txtSupplierComment" name="txtSupplierComment"
+                                                      type="text"
+                                                      style="width: 420px;"/></div>
+                </div>
+            </div>
+        </form>
+        </p>
+    </div>
+    <div class="ContentSideSections">
+        <div id="titleSupplier">
+            <ul>
+                <li style="width:20%;padding-top: 8px;font-size: 13px;font-weight:600;">DANH SÁCH NHÀ CUNG CẤP</li>
+                <li style="width:80%;text-align:right">
+                    <button id="add" type="button">Thêm</button>
+                </li>
+                <ul>
+        </div>
+    </div>
+
+    <div class="ContentSideSections Implementation">
+        <div id="tblSupplier"></div>
+    </div>
+
+    <!--<div id="SourceContentSide" class="ContentSideSections Source">
+        dddđ
+    </div>-->
+
+    <script language="javascript">
+        SyntaxHighlighter.highlight();
+    </script>
+
+</div>

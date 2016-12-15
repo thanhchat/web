@@ -11,7 +11,34 @@
             $('#txtDescription').puiinputtext();
             $('#txtProductPrice').puiinputtext();
             $('#pnlImage').puipanel();
-            $('#update').puibutton();
+            $('#update').puibutton({icon:'fa-save'});
+            $('#updateSupplier').puibutton({
+				icon:'fa-save',
+				click: function () {
+							var select = $('#drpSupplier').puidropdown('getSelectedValue');
+							if(select!=0){
+								$.ajax({
+									type: "GET",
+									url: 'ajax-action/product/update-product-supplier.php?idProduct=' + window.location.href.split('id=')[1]+'&supplier='+select,
+									dataType: "json",
+									context: this,
+									success: function (response) {
+										addMessage([{
+                                                    severity: 'info',
+                                                    summary: '',
+                                                    detail: 'Cập nhật nhà cung cấp thành công'
+                                                }]);
+									}
+								});
+							}else{
+								addMessage([{
+                                                    severity: 'error',
+                                                    summary: '',
+                                                    detail: 'Vui lòng chọn nhà cung cấp'
+                                                }]);
+							}
+				}
+			});
             $('#refreshFeature').puibutton({
 				icon:'fa-refresh',
 				click: function () {
@@ -26,7 +53,7 @@
 										$('#productFeature').puidropdown('addOption',value.label,value.value);
 									});
 								}
-							});
+					});
 						$.ajax({
                 type: "GET",
                 url: 'ajax-action/product/product-detail.php?id=' + id,
@@ -78,18 +105,46 @@
                 //$('#drpCategoryEdit').puidropdown('selectValue', data[0].PRODUCT_CATEGORY_ID);
                 //}
             });
+			
+			var func3 = $.ajax({
+                type: "GET",
+                url: 'ajax-action/supplier/supplier-list.php',
+                dataType: "json",
+                context: this,
+            });
             var func2 = $.ajax({
                 type: "GET",
                 url: 'ajax-action/category/list-category.php',
                 dataType: "json",
                 context: this,
             });
-            $.when(func1, func2).done(function (r1, r2) {
+            $.when(func1, func2,func3).done(function (r1, r2,r3) {
                 $('#drpCategoryEdit').puidropdown({
+					filter: true,
                     appendTo: 'self',
                     data: r2[0]
                 });
+				$('#drpSupplier').puidropdown({
+					filter: true,
+					appendTo: 'self',
+                    data: r3[0]
+                });
                 $('#drpCategoryEdit').puidropdown('selectValue', r1[0][0].PRODUCT_CATEGORY_ID);
+				//alert(r1[0][0].SUPPLIER);
+				if(r1[0][0].SUPPLIER!=null&&r1[0][0].SUPPLIER!=''){
+					$('#drpSupplier').puidropdown('selectValue', r1[0][0].SUPPLIER);
+					$('#infor').remove();
+					$.ajax({
+								type: "GET",
+								url: 'ajax-action/supplier/supplier-by-id.php?id=' + r1[0][0].SUPPLIER,
+								dataType: "json",
+								context: this,
+								success: function (data) {
+									$('#supplierInfo').append('<div id="infor"><div class="ui-grid-col-12" style="padding:2px 0px 0px 15px;line-height: 20px;"> <span style="color:red;">THÔNG TIN NHÀ CUNG CẤP</span><br> <span style="font-weight:700">Tên:</span> '+data[0].SUPPLIER_NAME+'<br><span style="font-weight:700">Email:</span> '+data[0].EMAIL+'<br><span style="font-weight:700">Điện thoại:</span> '+'0'+data[0].PHONE+'<br><span style="font-weight:700">Địa chỉ:</span> '+data[0].ADDRESS+'<br><span style="font-weight:700">Ghi chú:</span> '+data[0].COMMENT+'</div></div>');
+								}
+					});
+				}else
+					$('#drpSupplier').puidropdown('selectValue', 0);
                 $('#txtProductEdit').val(r1[0][0].MANUFACTURER_PARTY_ID.stripSlashes());
                 $('#txtProductName').val(r1[0][0].PRODUCT_NAME.stripSlashes());
                 $('#txtDescription').val((r1[0][0].DESCRIPTION != '' || r1[0][0].DESCRIPTION != null) ? r1[0][0].DESCRIPTION.stripSlashes() : '');
@@ -103,10 +158,28 @@
                         $('#dlgPublicProduct').puidialog('show');
                     }
                 });
-
+				$('#drpSupplier').puidropdown({
+					change: function (event) {
+						var select = $('#drpSupplier').puidropdown('getSelectedValue');
+						if(select!=0){
+							$('#infor').remove();
+							$.ajax({
+								type: "GET",
+								url: 'ajax-action/supplier/supplier-by-id.php?id=' + select,
+								dataType: "json",
+								context: this,
+								success: function (data) {
+									$('#supplierInfo').append('<div id="infor"><div class="ui-grid-col-12" style="padding:2px 0px 0px 15px;line-height: 20px;"> <span style="color:red;">THÔNG TIN NHÀ CUNG CẤP</span><br> <span style="font-weight:700">Tên:</span> '+data[0].SUPPLIER_NAME+'<br><span style="font-weight:700">Email:</span> '+data[0].EMAIL+'<br><span style="font-weight:700">Điện thoại:</span> '+'0'+data[0].PHONE+'<br><span style="font-weight:700">Địa chỉ:</span> '+data[0].ADDRESS+'<br><span style="font-weight:700">Ghi chú:</span> '+data[0].COMMENT+'</div></div>');
+								}
+							});
+						}else{
+							$('#infor').remove();
+						}
+					}
+				});
                 //CKEDITOR.replace('txtLongDescription');
             });
-
+			
             $('#tabProductDetail').puitabview({
                 effect: {
                     name: 'fade'
@@ -116,6 +189,7 @@
 
 
             $('#productFeature').puidropdown({
+				filter: true,
                 data: function (callback) {
                     $.ajax({
                         type: "GET",
@@ -753,11 +827,20 @@
                                     url: 'ajax-action/product/del-feature-product.php?type=' + type + '&value=' + value + '&productId=' + id,
                                     dataType: "json",
                                     success: function (response) {
-                                        addMessage([{
-                                            severity: 'info',
-                                            summary: '',
-                                            detail: 'Xóa tính năng thành công'
-                                        }]);
+										if(response.error==1){
+												addMessage([{
+												severity: 'error',
+												summary: '',
+												detail: 'Tính năng này đã sử dụng nên không được xóa'
+											}]);
+
+										}else{
+											addMessage([{
+												severity: 'info',
+												summary: '',
+												detail: 'Xóa tính năng thành công'
+											}]);
+										}
                                         $.each(response['listFeatureType'], function (key, value) {
                                             if ($('#tbFeature' + value.PRODUCT_FEATURE_TYPE_ID).length)
                                                 $('#tbFeature' + value.PRODUCT_FEATURE_TYPE_ID).remove();
@@ -1065,6 +1148,7 @@
                 <li><a href="#tabProductFeature">Tính năng</a></li>
                 <li><a href="#tabProductPrice">Giá sản phẩm</a></li>
                 <li><a href="#tabProductImageFeature">Ảnh tính năng</a></li>
+				<li><a href="#tabSupplierProduct">Nhà cung cấp</a></li>
             </ul>
             <div>
                 <div id="tabInforProduct">
@@ -1205,6 +1289,24 @@
                         </div>
                     </div>
                 </div>
+				<div id="tabSupplierProduct" style="min-height:300px;">
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+								<select id="drpSupplier" name="drpSupplier">
+									<option value="0" selected>-- Chọn nhà cung cấp --</option>
+								</select>
+                            </div>
+                            <div class="ui-grid-col-2" style="padding:0;padding-left:5px;">
+								<button type="button" id="updateSupplier" style="padding:0;">Cập nhật</button>
+                            </div>
+                            <div class="ui-grid-col-6" id="supplierInfo">
+								
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				
             </div>
         </div>
     </div>

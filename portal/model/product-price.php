@@ -21,6 +21,13 @@ class productprice extends database
         $count = $this->rowCount();
         return $count;
 	}
+	function checkProductPriceByIdAndFeature($idProduct,$feature){
+		$sql = "SELECT * FROM product_price WHERE product_price.PRODUCT_PRICE_ID='$idProduct' AND  TERM_UOM_ID='$feature'";
+		$this->query($sql);
+		$this->execute();
+        $count = $this->rowCount();
+        return $count;
+	}
 	function updateProductPrice($productPriceType,$feature,$currencyUomId,$price,$userlogin,$idProductKey,$productPriceTypeKey,$currencyUomIdKey,$featureKey){
 		try {
             $this->beginTransaction();
