@@ -39,6 +39,13 @@
 							}
 				}
 			});
+			
+			$('#refreshProductFeature').puibutton({
+				icon:'fa-refresh',
+				click: function () {
+					$('#tblProductFeatureList').puidatatable('reload');
+				}
+			});
             $('#refreshFeature').puibutton({
 				icon:'fa-refresh',
 				click: function () {
@@ -406,7 +413,13 @@
                                                         detail: 'Cập nhật sản phẩm thất bại'
                                                     }]);
                                                     $('#dlgUpdate').puidialog('hide');
-                                                } else {
+                                                } else if(data.mess == 3) {
+													addMessage([{
+                                                        severity: 'error',
+                                                        summary: '',
+                                                        detail: 'Ký hiệu sản phẩm này đã tồn tại'
+                                                    }]);
+												}else{
                                                     addMessage([{
                                                         severity: 'info',
                                                         summary: '',
@@ -521,6 +534,21 @@
                                         summary: '',
                                         detail: 'Thêm tính năng thành công'
                                     }]);
+									$('#listProductFeature').remove();
+									$('#lisFeatureDiv').append('<select id="listProductFeature" name="listProductFeature"></select>');
+									$('#listProductFeature').puidropdown({
+										data: function (callback) {
+											$.ajax({
+												type: "GET",
+												url: 'ajax-action/product/load-feature-to-product.php?listFeaturePrice=1&productId=' + window.location.href.split('id=')[1],
+												dataType: "json",
+												context: this,
+												success: function (response) {
+													callback.call(this, response);
+												}
+											});
+										}
+									});
                                     $.each(response['listFeatureType'], function (key, value) {
                                         if ($('#tbFeature' + value.PRODUCT_FEATURE_TYPE_ID).length)
                                             $('#tbFeature' + value.PRODUCT_FEATURE_TYPE_ID).remove();
@@ -610,6 +638,7 @@
                     });
                 }
             });
+			
             $('#listCurrencyUom').puidropdown();
             $('#dlgAddProductPrice').puidialog({
                 showEffect: 'fade',
@@ -840,6 +869,21 @@
 												summary: '',
 												detail: 'Xóa tính năng thành công'
 											}]);
+											$('#listProductFeature').remove();
+											$('#lisFeatureDiv').append('<select id="listProductFeature" name="listProductFeature"></select>');
+											$('#listProductFeature').puidropdown({
+												data: function (callback) {
+													$.ajax({
+														type: "GET",
+														url: 'ajax-action/product/load-feature-to-product.php?listFeaturePrice=1&productId=' + window.location.href.split('id=')[1],
+														dataType: "json",
+														context: this,
+														success: function (response) {
+															callback.call(this, response);
+														}
+													});
+												}
+											});
 										}
                                         $.each(response['listFeatureType'], function (key, value) {
                                             if ($('#tbFeature' + value.PRODUCT_FEATURE_TYPE_ID).length)
@@ -1066,6 +1110,62 @@
                 });
                 $('#dlgUpdatePrice').puidialog('show');
             }
+		function updateAction(id) {
+            $.ajax({
+                type: "GET",
+                url: 'ajax-action/product/update-action-product.php?idProduct=' + id,
+                dataType: "json",
+                context: this,
+                success: function (data) {
+                        $('#tblProductFeatureList').puidatatable('reload');
+                        addMessage([{
+                            severity: 'info',
+                            summary: '',
+                            detail: 'Cập nhật trạng thái thành công'
+                        }]);
+                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    addMessage([{
+                                                        severity: 'error',
+                                                        summary: '',
+                                                        detail: 'Lỗi cập nhật trạng thái sản phẩm'
+                                                    }]);
+                                                    $('#loading').hide();
+                                                    $('#dlgUpdatePrice').unblock();
+                                                }
+            });
+        }
+		$('#tblProductFeatureList').puidatatable({
+            emptyMessage: 'Không có danh sách sản phẩm tính năng',
+            paginator: {
+                rows: 10
+            },
+            columns: [
+                {
+                    field: 'PRODUCT_ID', headerText: 'Mã sản phẩm', sortable: true,filter: true,headerStyle:'width:130px;',bodyStyle:'text-align:center'
+                },
+				{field: 'PRODUCT_FEATURE', headerText: 'Tính năng', sortable: true,content: function (car) {
+                        return car.PRODUCT_FEATURE;
+                }},
+                {field: 'IS_ACTIVE', headerText: 'Trạng thái', sortable: true,headerStyle:'width:130px;',bodyStyle:'text-align:center',content: function (car) {
+                    if (car.IS_ACTIVE == 'Ẩn')
+                        return $('<span onClick=updateAction("' + car.PRODUCT_ID + '") style="text-decoration: underline;color:red;cursor: pointer;">' + car.IS_ACTIVE + '</span>');
+                    else
+                        return $('<span onClick=updateAction("' + car.PRODUCT_ID + '") style="text-decoration: underline;color:blue;cursor: pointer;">' + car.IS_ACTIVE + '</span>');
+                }}
+            ],
+            datasource: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/product/list-product-feature-detail.php?idProduct='+window.location.href.split('id=')[1],
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            }
+        });
     </script>
     <script type="text/javascript">
         CKEDITOR.replace('txtLongDescription');
@@ -1148,6 +1248,7 @@
                 <li><a href="#tabProductFeature">Tính năng</a></li>
                 <li><a href="#tabProductPrice">Giá sản phẩm</a></li>
                 <li><a href="#tabProductImageFeature">Ảnh tính năng</a></li>
+				<li><a href="#tabProductFeatureList">Sản phẩm tính năng</a></li>
 				<li><a href="#tabSupplierProduct">Nhà cung cấp</a></li>
             </ul>
             <div>
@@ -1239,7 +1340,7 @@
                                      style="padding:8px 5px 5px 14px;width:16.6%;text-align:center;">
                                     <select id="listProductPriceType" name="listProductPriceType"></select>
                                 </div>
-                                <div class="ui-state-default "
+                                <div class="ui-state-default " id="lisFeatureDiv"
                                      style="padding:8px 5px 5px 20px;width:16.67%;text-align:center;">
                                     <select id="listProductFeature" name="listProductFeature"></select>
                                 </div>
@@ -1285,6 +1386,18 @@
                             </div>
 							 <div class="ui-grid-col-1">
                                <button style="width:120px;" type="button" id="refreshFeature">Làm mới</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<div id="tabProductFeatureList">
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-9">
+								<div id="tblProductFeatureList"></div>
+                            </div>
+							<div class="ui-grid-col-1" style="padding-left:10px">
+                               <button style="width:120px;magin-left:15px" type="button" id="refreshProductFeature">Làm mới</button>
                             </div>
                         </div>
                     </div>

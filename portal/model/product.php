@@ -12,7 +12,7 @@ class product extends database
 	
     function checkProductByManufactureId($manufactureId)
     {
-        $sql = "SELECT * FROM PRODUCT WHERE MANUFACTURER_PARTY_ID=:manufactureId";
+        $sql = "SELECT * FROM PRODUCT WHERE MANUFACTURER_PARTY_ID=:manufactureId and PRODUCT_PARENT_ID=0";
         $this->query($sql);
         $this->bind(':manufactureId', strtoupper($manufactureId));
         $this->execute();
@@ -34,6 +34,12 @@ class product extends database
 	function getProductById($Id)
     {
         $sql = "SELECT * FROM PRODUCT WHERE PRODUCT_ID='$Id'";
+        $result = $this->getData($sql);
+        return $result;
+    }
+	function getProductByManufactureId($manufactureId)
+    {
+        $sql = "SELECT * FROM PRODUCT WHERE MANUFACTURER_PARTY_ID='$manufactureId' AND PRODUCT_PARENT_ID=0";
         $result = $this->getData($sql);
         return $result;
     }
@@ -201,6 +207,15 @@ class product extends database
 			$this->beginTransaction();
 			$sql="UPDATE product SET MANUFACTURER_PARTY_ID=:manufactureId,PRODUCT_CATEGORY_ID=:productCategory,PRODUCT_NAME=:productName,DESCRIPTION=:description,LONG_DESCRIPTION=:longDescription WHERE PRODUCT_ID=:productId";
 			$this->query($sql);
+            $this->bind(':productId', $productId);
+            $this->bind(':manufactureId', strtoupper($manufactureId));
+            $this->bind(':productCategory', $productCategory);
+            $this->bind(':productName', $productName);
+            $this->bind(':description', $description);
+            $this->bind(':longDescription', $longDescription);
+			$this->execute();
+			$sql1="UPDATE product SET MANUFACTURER_PARTY_ID=:manufactureId,PRODUCT_CATEGORY_ID=:productCategory,PRODUCT_NAME=:productName,DESCRIPTION=:description,LONG_DESCRIPTION=:longDescription WHERE PRODUCT_PARENT_ID=:productId";
+			$this->query($sql1);
             $this->bind(':productId', $productId);
             $this->bind(':manufactureId', strtoupper($manufactureId));
             $this->bind(':productCategory', $productCategory);
