@@ -13,8 +13,9 @@ if(!empty($_POST)){
 	$txtCategoryOrdering =$_POST['txtCategoryOrderingEdit'];
 	$drpCategory =$_POST['drpCategoryEdit'];
 	$chkActive =isset($_POST['chkActiveEdit'])?1:0;
-	$objCat->editAction($idCate,$txtCategoryName,$txtCategoryUrl,$txtCategoryOrdering,$chkActive,$drpCategory,$txtCategoryLevel);
-	$listMenu1 = $objCat->Menu(0,-1,null,"----");
+	$txtController =$_POST['txtControllerEdit'];
+	$objCat->editAction($idCate,$txtCategoryName,$txtCategoryUrl,$txtCategoryOrdering,$chkActive,$drpCategory,$txtCategoryLevel,$txtController);
+	$listMenu1 = $objCat->Menu(CATEGORY_HOME_ID,-1,null,"----");
 	if (count($listMenu1) > 0) {
 		foreach ($listMenu1 as $k => $v) {
 				if($idCate!=$v['MENU_ID']){

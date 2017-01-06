@@ -11,9 +11,10 @@ if(!empty($_POST)){
 	$txtCategoryLevel =$_POST['txtCategoryLevel'];
 	$txtCategoryOrdering =$_POST['txtCategoryOrdering'];
 	$drpCategory =$_POST['drpCategory'];
+	$txtController =$_POST['txtController'];
 	$chkActive =isset($_POST['chkActive'])?1:0;
-	$objCat->addAction($txtCategoryName,$txtCategoryUrl,$txtCategoryOrdering,$chkActive,$drpCategory,$txtCategoryLevel);
-	$listMenu1 = $objCat->Menu(0,-1,null,"----");
+	$objCat->addAction($txtCategoryName,$txtCategoryUrl,$txtCategoryOrdering,$chkActive,$drpCategory,$txtCategoryLevel,$txtController);
+	$listMenu1 = $objCat->Menu(CATEGORY_HOME_ID,-1,null,"----");
 	if (count($listMenu1) > 0) {
 		foreach ($listMenu1 as $k => $v) {
 			 $stack = array("label" => $v['NAME'], "value" => $v['MENU_ID']);

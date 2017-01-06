@@ -35,9 +35,25 @@ function buildProductFeature($idProduct,$objProduct){
 					$arrayFeatureId=explode(':',$featureLoad[0]);
 					foreach($arrayFeatureId as $key=>$value){
 						if(!checkFeatureExist($value,$listProductFeature)&&$value!=''){
-						$count=$objProduct->countProductJuniorById($idProduct);
-						$idProductAdd=$idProduct.'-'.($count+1);
-						$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$value,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,null,null,null,0,null,'N');
+							$check=explode('@',checkProductByFeature($value,$listProductFeature));
+							if($check[0]>0){
+								$objProduct->updateFeatureType($productNew[0]['FEATURE_TYPE_ID'],$check[0]);
+								$objProduct->updateFeature($value,$check[0]);
+								unset($listProductFeature[$check[1]]);								
+							}else{
+								$count=$objProduct->countProductJuniorById($idProduct);
+								$idProductAdd=$idProduct.'-'.($count+1);	
+								$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+								if(count($productNew1)>0&&$productNew1!=null){
+									do{
+										$count++;
+										$idProductAdd=$idProduct.'-'.($count);	
+										$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+									}while(count($productNew)>0&&$productNew!=null);
+								}
+								$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$value,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,0,0,null,0,null,'N');
+							}
+						
 					}
 					
 				}
@@ -56,8 +72,16 @@ function buildProductFeature($idProduct,$objProduct){
 								unset($listProductFeature[$check[1]]);								
 							}else{
 								$count=$objProduct->countProductJuniorById($idProduct);
-								$idProductAdd=$idProduct.'-'.($count+1);
-								$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,null,null,null,0,null,'N');
+								$idProductAdd=$idProduct.'-'.($count+1);	
+								$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+								if(count($productNew1)>0&&$productNew1!=null){
+									do{
+										$count++;
+										$idProductAdd=$idProduct.'-'.($count);	
+										$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+									}while(count($productNew1)>0&&$productNew1!=null);
+								}
+								$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,0,0,null,0,null,'N');
 							}
 						}
 					}
@@ -80,8 +104,16 @@ function buildProductFeature($idProduct,$objProduct){
 									unset($listProductFeature[$check[1]]);								
 								}else{
 									$count=$objProduct->countProductJuniorById($idProduct);
-									$idProductAdd=$idProduct.'-'.($count+1);
-									$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,null,null,null,0,null,'N');
+									$idProductAdd=$idProduct.'-'.($count+1);	
+									$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+									if(count($productNew1)>0&&$productNew1!=null){
+										do{
+											$count++;
+											$idProductAdd=$idProduct.'-'.($count);	
+											$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+										}while(count($productNew1)>0&&$productNew1!=null);
+									}
+									$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,0,0,null,0,null,'N');
 								}
 							}
 						}
@@ -107,8 +139,16 @@ function buildProductFeature($idProduct,$objProduct){
 										unset($listProductFeature[$check[1]]);								
 									}else{
 										$count=$objProduct->countProductJuniorById($idProduct);
-										$idProductAdd=$idProduct.'-'.($count+1);
-										$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,null,null,null,0,null,'N');
+										$idProductAdd=$idProduct.'-'.($count+1);	
+										$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+										if(count($productNew1)>0&&$productNew1!=null){
+											do{
+												$count++;
+												$idProductAdd=$idProduct.'-'.($count);	
+												$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+											}while(count($productNew1)>0&&$productNew1!=null);
+										}
+										$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,0,0,null,0,null,'N');
 									}
 								}
 							}
@@ -137,8 +177,16 @@ function buildProductFeature($idProduct,$objProduct){
 											unset($listProductFeature[$check[1]]);								
 										}else{
 											$count=$objProduct->countProductJuniorById($idProduct);
-											$idProductAdd=$idProduct.'-'.($count+1);
-											$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,null,null,null,0,null,'N');
+											$idProductAdd=$idProduct.'-'.($count+1);	
+											$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+											if(count($productNew1)>0&&$productNew1!=null){
+												do{
+													$count++;
+													$idProductAdd=$idProduct.'-'.($count);	
+													$productNew1=$objProduct->getProductFeatureById($idProductAdd);
+												}while(count($productNew1)>0&&$productNew1!=null);
+											}
+											$objProduct->addProductFullInfo($idProductAdd,$productNew[0]['MANUFACTURER_PARTY_ID'],$idProduct,$productNew[0]['PRODUCT_CATEGORY_ID'],$productNew[0]['FEATURE_TYPE_ID'],$strFeature,null,$productNew[0]['PRODUCT_NAME'],null,null,null,null,null,0,0,null,0,null,'N');
 										}
 									}
 								}

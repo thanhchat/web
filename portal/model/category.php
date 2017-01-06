@@ -23,7 +23,7 @@ class category extends database {
         $query = $this->query($sql);
         $rs=$this->result();
         foreach($rs as $k=>$v){
-            $trees[] = array("MENU_ID" => $v['MENU_ID'], "NAME" => $space.$v['NAME'], "PARENTS" => $v['PARENTS'], "LEVEL" => $v['LEVEL'], "ORDERING" => ($v['ORDERING']!=null)?$v['ORDERING']:"", "ENABLED" => $v['ENABLED'], "URL" => ($v['URL']!=null)?$v['URL']:"");
+            $trees[] = array("MENU_ID" => $v['MENU_ID'], "NAME" => $space.$v['NAME'], "PARENTS" => $v['PARENTS'], "LEVEL" => $v['LEVEL'], "ORDERING" => ($v['ORDERING']!=null)?$v['ORDERING']:"", "ENABLED" => $v['ENABLED'], "URL" => ($v['URL']!=null)?$v['URL']:"","IMAGE" => ($v['IMAGE']!=null)?$v['IMAGE']:"","CONTROLLER" => ($v['CONTROLLER']!=null)?$v['CONTROLLER']:"");
             $trees = $this->Menu($v['MENU_ID'],$level, $space.$char,$char, $trees);
         }
         return $trees;
@@ -37,8 +37,13 @@ class category extends database {
         $sql="SELECT * FROM $this->tbName WHERE $this->primary=$id";
         return $this->getData($sql);
     }
-    public function editAction($idCat,$catName,$url,$ordering,$active,$parent,$level){
-        $sql="UPDATE menu_items SET NAME='".$catName."',URL='".$url."',ORDERING=$ordering,ENABLED=$active,PARENTS=$parent,LEVEL=$level WHERE MENU_ID=$idCat";
+    public function editAction($idCat,$catName,$url,$ordering,$active,$parent,$level,$controller){
+        $sql="UPDATE menu_items SET NAME='".$catName."',URL='".$url."',ORDERING=$ordering,ENABLED=$active,PARENTS=$parent,LEVEL=$level,CONTROLLER='".$controller."' WHERE MENU_ID=$idCat";
+        $this->query($sql);
+        return $this->execute();
+    }
+    public function addImage($image,$id){
+        $sql="UPDATE menu_items SET IMAGE='".$image."' WHERE MENU_ID=$id";
         $this->query($sql);
         return $this->execute();
     }
@@ -47,8 +52,8 @@ class category extends database {
         $this->query($sql);
         return $this->execute();
     }
-    public function addAction($catName,$url,$ordering,$active,$parent,$level){
-        $sql="INSERT INTO menu_items(NAME,URL,ORDERING,ENABLED,PARENTS,LEVEL) VALUES ('".$catName."','".$url."',$ordering,$active,$parent,$level)";
+    public function addAction($catName,$url,$ordering,$active,$parent,$level,$controller){
+        $sql="INSERT INTO menu_items(NAME,URL,ORDERING,ENABLED,PARENTS,LEVEL,CONTROLLER) VALUES ('".$catName."','".$url."',$ordering,$active,$parent,$level,'".$controller."')";
         $this->query($sql);
         return $this->execute();
     }

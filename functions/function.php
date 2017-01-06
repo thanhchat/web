@@ -275,7 +275,7 @@ function pareString($str, $character)
 function convertStringAndId($str, $id, $character)
 {
     $string = pareString($str, "-");
-    $string = $string . "-" . $id . $character;
+    $string = $id . "-" . $string . $character;
     return $string;
 }
 

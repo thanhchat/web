@@ -79,9 +79,13 @@ if (!$fp) {
                         <a href=""><img alt="logo" src="../primeui/showcase/resources/images/admin2.png" width="150px"
                                         height="70px"/></a>
                     </span>
-            <span id="SubMenu-PrimeElements" class="MenuSideMainLink bordersOfMenuSide"
-                  onclick="Showcase.changePageWithLink('view/product/index.phtml')"><span
-                    class="MainLinkText">Sản phẩm</span></span>
+             <span id="SubMenu-Input" class="MenuSideMainLink bordersOfMenuSide"
+                   onclick="Showcase.openSubMenu(this);"><span class="MainLinkText">Sản phẩm</span></span>
+
+            <div class="SubMenuLinkContainer">
+                <a class="SubMenuLink" href="view/product/index.phtml">Danh sách sản phẩm</a>
+                <a class="SubMenuLink" href="view/product/product-category.phtml">Sản phẩm danh mục</a>
+            </div>
             <span id="SubMenu-Input" class="MenuSideMainLink bordersOfMenuSide"
                   onclick="Showcase.openSubMenu(this);"><span class="MainLinkText">Tính năng</span></span>
 

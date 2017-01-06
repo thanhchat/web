@@ -1,0 +1,110 @@
+<?php if(count($ProductSlide)>0){?>
+<div class="slider-area">
+    <!-- Slider -->
+    <div class="block-slider block-slider4">
+        <ul class="" id="slideShopping">
+			<?php 
+				foreach($ProductSlide as $k=>$pSlide){
+				$img=split('@@@',$pSlide['SMALL_IMAGE_URL']);
+				$imgName='';
+				if(count($img>0))
+					$imgName=$img[1];
+			?>
+            <li>
+                <div class="col-md-6 col-sm-12"><img src="/public/product/<?=$pSlide['PRODUCT_ID'];?>/medium/<?=$imgName;?>" alt="<?=$pSlide['PRODUCT_NAME'];?>"></div>
+                <div class="caption-group">
+                    <h3 class="caption title"><?=$pSlide['PRODUCT_NAME'];?></h3>
+					<?php if($pSlide['PRODUCT_PRICE_S']>0){?>
+						<h4 class="caption subtitle"><?=number_format($pSlide['PRODUCT_PRICE_S']);?> VNĐ</h4>
+						<h4 style="margin-top:5px;"><del><?=number_format($pSlide['PRODUCT_PRICE_D']);?> VNĐ</del></h4>
+					<?php }else{?>
+						<h4 class="caption subtitle"><?=number_format($pSlide['PRODUCT_PRICE_D']);?> VNĐ</h4>
+					<?php }?>
+                    <a class="caption button-radius" href="<?=$pSlide['URL'];?>/<?=convertStringAndId($pSlide['PRODUCT_NAME'],$pSlide['PRODUCT_ID'],'.html');?>"><span class="icon"></span>Mua ngay</a>
+                </div>
+            </li>
+			<?php }?>
+        </ul>
+    </div>
+    <!-- ./Slider -->
+</div>
+<?php }?>
+<!-- End slider area -->
+<?php 
+		if(count($ProductCountCategory)>0){	
+		?>
+<div class="promo-area">
+    <div class="container" style="padding-left: 0px;padding-right: 0px;">
+		
+			<div class="arriv-top">
+				<?php foreach($ProductCountCategory as $k=>$countProduct){?>
+				<div class="col-md-4" style="padding-left: 0px;padding-right: 15px;">
+					<img src="/public/category/<?=$countProduct['IMAGE'];?>" class="img-responsive" alt="<?=$countProduct['NAME'];?>">
+
+					<div class="arriv-info">
+						<h3><?=mb_strtoupper($countProduct['NAME'],'utf-8');?></h3>
+
+						<div class="crt-btn">
+							<a href="<?=$countProduct['URL'];?>"><?=$countProduct['COUNT'];?> sản phẩm</a>
+						</div>
+					</div>
+				</div>
+				<?php }?>
+				<div class="clearfix"></div>
+			</div>
+		
+    </div>
+</div>
+<?php }?>
+<?php if(count($ProductCategoryHome)>0){?>
+<div class="maincontent-area">
+    <div class="container" style="padding-left: 0px;padding-right: 0px;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="latest-product">
+					<?php foreach($ProductCategoryHome as $k=>$value){
+					$delay=0.0;
+					?>
+                    <div class="special"><h3><?=mb_strtoupper($value['TITLE'],'UTF-8');?></h3></div>
+					<?php foreach($value['LIST-PRODUCT'] as $k1=>$product){
+						$img=split('@@@',$product['SMALL_IMAGE_URL']);
+						$imgName='';
+						if(count($img>0))
+							$imgName=$img[1];
+					?>
+						<div class="col-md-3 wow fadeIn animated" data-wow-delay="<?=$delay;?>s">
+							<div class="single-product">
+								<div class="product-f-image">
+									<img src="/public/product/<?=$product['PRODUCT_ID'];?>/medium/<?=$imgName;?>" alt="<?=$product['PRODUCT_NAME'];?>">
+									<div class="product-hover">
+										<a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Thêm vào
+											giỏ hàng</a>
+										<a title="<?=$product['PRODUCT_NAME'];?>" href="<?=$product['URL'];?>/<?=convertStringAndId($product['PRODUCT_NAME'],$product['PRODUCT_ID'],'.html');?>" class="view-details-link"><i class="fa fa-link"></i>
+											Chi tiết</a>
+									</div>
+								</div>
+								<div class="special-info">
+									<h5><a title="<?=$product['PRODUCT_NAME'];?>" href="<?=$product['URL'];?>/<?=convertStringAndId($product['PRODUCT_NAME'],$product['PRODUCT_ID'],'.html');?>"><?=$product['PRODUCT_NAME'];?></a></h5>
+
+									<div class="product-carousel-price">
+										<?php if($product['PRODUCT_PRICE_S']>0){?>
+												<ins><?=number_format($product['PRODUCT_PRICE_S']);?> VNĐ</ins>
+												<del><?=number_format($product['PRODUCT_PRICE_D']);?> VNĐ</del>
+											<?php }else{?>
+												<ins><?=number_format($product['PRODUCT_PRICE_D']);?> VNĐ</ins>
+											<?php }?>
+									</div>
+								</div>
+							</div>
+						</div>
+						<?php $delay=$delay+0.1;}?>
+					<div class="clearfix"></div>
+					<?php }?>
+					
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php }?>
+<!-- End main content area -->

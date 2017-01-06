@@ -68,7 +68,7 @@
                 context: this,
                 success: function (data) {
                     var arrayImageFeature = Array();
-					if(data.length>0){
+					if(data.length>0&&data[0].SMALL_IMAGE_URL!=''&&data[0].SMALL_IMAGE_URL!=null){
 						var arrayImage = data[0].SMALL_IMAGE_URL.split('@@@');
 						arrayImage.splice(0, 1);
 					}
@@ -154,8 +154,8 @@
 					$('#drpSupplier').puidropdown('selectValue', 0);
                 $('#txtProductEdit').val(r1[0][0].MANUFACTURER_PARTY_ID.stripSlashes());
                 $('#txtProductName').val(r1[0][0].PRODUCT_NAME.stripSlashes());
-                $('#txtDescription').val((r1[0][0].DESCRIPTION != '' || r1[0][0].DESCRIPTION != null) ? r1[0][0].DESCRIPTION.stripSlashes() : '');
-                $('#txtLongDescription').val((r1[0][0].LONG_DESCRIPTION != '' || r1[0][0].LONG_DESCRIPTION != null) ? r1[0][0].LONG_DESCRIPTION.stripSlashes() : '');
+                $('#txtDescription').val((r1[0][0].DESCRIPTION != '' && r1[0][0].DESCRIPTION != null) ? r1[0][0].DESCRIPTION.stripSlashes() : '');
+                $('#txtLongDescription').val((r1[0][0].LONG_DESCRIPTION != '' && r1[0][0].LONG_DESCRIPTION != null) ? r1[0][0].LONG_DESCRIPTION.stripSlashes() : '');
                 if (r1[0][0].IS_ACTIVE == 'Y') {
                     $('#chkPublicProduct').puitogglebutton('check');
                     $('#dlgPublicProduct').puidialog('hide');
@@ -216,7 +216,7 @@
                     //addMessage([{severity: 'info', summary: 'Row Selected', detail: (data.imageName)}]);
                     $.ajax({
                         type: "GET",
-                        url: 'ajax-action/product/load-image-feature-to-product.php?idProduct=' + select,
+                        url: 'ajax-action/product/load-image-feature-to-product.php?idProduct='+window.location.href.split('id=')[1]+'&feature=' + select,
                         dataType: "json",
                         context: this,
                         success: function (response) {
@@ -251,7 +251,7 @@
                                         //addMessage([{severity: 'info', summary: 'Row Selected', detail: (data.imageName)}]);
                                         $.ajax({
                                             type: "GET",
-                                            url: 'ajax-action/product/add-image-feature-to-product.php?idProduct=' + select + '&image=' + data.imageName,
+                                            url: 'ajax-action/product/add-image-feature-to-product.php?idProduct='+window.location.href.split('id=')[1]+'&feature=' + select+ '&image=' + data.imageName,
                                             dataType: "json",
                                             context: this,
                                             success: function (response) {
@@ -289,7 +289,7 @@
                                         var data = $('#tbllistImageFeatureProduct').puidatatable('getContextMenuSelection');
                                         $.ajax({
                                             type: "GET",
-                                            url: 'ajax-action/product/delete-image-feature-to-product.php?idProduct=' + select + '&image=' + data.imageName,
+                                            url: 'ajax-action/product/delete-image-feature-to-product.php?idProduct='+window.location.href.split('id=')[1]+'&feature=' + select+ '&image=' + data.imageName,
                                             dataType: "json",
                                             context: this,
                                             success: function (response) {
@@ -317,7 +317,9 @@
 												}
                                             }
                                         });
-                                    }
+                                    }else{
+										addMessage([{severity: 'warn', summary: '', detail: 'Chưa chọn tính năng'}]);
+									}
                                 }
                             };
                         }
@@ -333,14 +335,14 @@
                 context: this,
                 success: function (data) {
                     var arrayImageFeature = Array();
-					if(data.length>0){
+					if(data.length>0&&data[0].SMALL_IMAGE_URL!=''&&data[0].SMALL_IMAGE_URL!=null){
 						var arrayImage = data[0].SMALL_IMAGE_URL.split('@@@');
 						arrayImage.splice(0, 1);
+                        $.each(arrayImage, function (key, value) {
+                            var temp = {imageName: value};
+                            arrayImageFeature.push(temp);
+                        });
 					}
-                    $.each(arrayImage, function (key, value) {
-                        var temp = {imageName: value};
-                        arrayImageFeature.push(temp);
-                    });
                     $('#tblImageFeature').puidatatable({
                         emptyMessage: 'Không có danh sách hình ảnh',
                         columns: [
@@ -1324,6 +1326,7 @@
                             </div>
                             <div class="ui-grid-col-7">
                                 <div id="tbFeatureAll"></div>
+								Tính năng chỉ được xóa khi: chưa dùng cập nhật giá, chưa cập nhật hình, số lượng phải=0
                             </div>
                         </div>
                     </div>

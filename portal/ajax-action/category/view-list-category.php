@@ -16,7 +16,7 @@ $data = array();
 if(isset($_GET['listCateAdd'])){
 	$cate=$_GET['listCateAdd'];
 	$data = array();
-	$listMenu1 = $objCat->Menu(0,-1,null,"----");
+	$listMenu1 = $objCat->Menu(CATEGORY_DEFAULT_ID,-1,null,"----");
 	if (count($listMenu1) > 0) {
 		foreach ($listMenu1 as $k => $v) {
 			if($cate==0){
@@ -33,14 +33,14 @@ if(isset($_GET['listCateAdd'])){
 	$json = json_encode($data);
 	echo($json);
 }else{
-	$listMenu1 = $objCat->Menu(0,-1,null,"----");
+	$listMenu1 = $objCat->Menu(CATEGORY_DEFAULT_ID,-1,null,"----");
 	$data1 = array();
 	if (count($listMenu1) > 0) {
 		foreach ($listMenu1 as $k => $v) {
 			$ac="Ẩn";
 			if($v['ENABLED']==1)
 				$ac="Hiển thị";
-			$stack = array("MENU_ID" => $v['MENU_ID'], "NAME" => $v['NAME'], "PARENTS" => getNameCategoryById($v['PARENTS'],$listMenu1)." -- ".$v['PARENTS'],"LEVEL" => $v['LEVEL'], "ORDERING" => $v['ORDERING'], "ENABLED" => $v['ENABLED'], "URL" => $v['URL']);
+			$stack = array("MENU_ID" => $v['MENU_ID'], "NAME" => $v['NAME'], "PARENTS" => getNameCategoryById($v['PARENTS'],$listMenu1)." -- ".$v['PARENTS'],"LEVEL" => $v['LEVEL'], "ORDERING" => $v['ORDERING'], "ENABLED" => $v['ENABLED'], "URL" => $v['URL'],"IMAGE" => $v['IMAGE'],"CONTROLLER" => $v['CONTROLLER']);
 			array_push($data1, $stack);
 		}
 	}
@@ -56,8 +56,9 @@ if(!empty($_POST)){
 	$txtCategoryOrdering =$_POST['txtCategoryOrdering'];
 	$drpCategory =$_POST['drpCategory'];
 	$chkActive =isset($_POST['chkActive'])?1:0;
-	$objCat->addAction($txtCategoryName,$txtCategoryUrl,$txtCategoryOrdering,$chkActive,$drpCategory,$txtCategoryLevel);
-	$listMenu1 = $objCat->Menu(0,-1,null,"----");
+	$txtController =$_POST['drpCategory'];
+	$objCat->addAction($txtCategoryName,$txtCategoryUrl,$txtCategoryOrdering,$chkActive,$drpCategory,$txtCategoryLevel,$txtController);
+	$listMenu1 = $objCat->Menu(CATEGORY_DEFAULT_ID,-1,null,"----");
 	$data2 = array();
 	if (count($listMenu1) > 0) {
 		foreach ($listMenu1 as $k => $v) {

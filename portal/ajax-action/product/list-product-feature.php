@@ -17,18 +17,31 @@ if (count($listProduct) > 0) {
 			$arrayFeatureType=explode('@',$v['FEATURE_TYPE_ID']);
 			$arrayFeature=explode('@',$v['FEATURE_ID']);
 			foreach ($arrayFeatureType as $key => $value) {
+				$id='';
 				$FeatureTypeName=$objFeature->getFeatureTypeById($value);
-				$feature.=$FeatureTypeName[0]['DESCRIPTION_FEATURE_TYPE'].' : ';
+				//$feature.=$FeatureTypeName[0]['DESCRIPTION_FEATURE_TYPE'].' : ';
 				$featureName=$objFeature->getFeatureByArrayId(explode(':',$arrayFeature[$key]));
 				foreach ($featureName as $keyF => $valueF) {
-					$feature.=$valueF['DESCRIPTION_FEATURE'].'  | ';
+					$feature=$valueF['DESCRIPTION_FEATURE'];
+					$id=$valueF['PRODUCT_FEATURE_ID'];
+				}
+				$stack = array("label" =>$feature, "value" =>  $id);
+				if(count($array)>0){
+					$flag=0;
+					foreach($array as $k=>$v1){
+						if($id==$v1['value'])
+							$flag=1;
+					}
+					if($flag==0)
+						array_push($array, $stack);
+				}else{
+					array_push($array, $stack);
 				}
 			}
 		}
-		$feature=rtrim($feature, "  | ");
-		//$feature.=' (Mã sản phẩm : '.$v['PRODUCT_ID'].')';
-        $stack = array("label" =>$feature, "value" =>  $v['PRODUCT_ID']);
-        array_push($array, $stack);
+		//$feature=rtrim($feature, "  | ");
+        //$stack = array("label" =>$feature, "value" =>  $v['PRODUCT_ID']);
+        //array_push($array, $stack);
     }
 }else{
 	$stack = array("label" =>' -- Không có tính năng --', "value" =>  -1);

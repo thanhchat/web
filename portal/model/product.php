@@ -62,7 +62,12 @@ class product extends database
     }
 	
 	function getProductJuniorById($id){
-		$sql = "SELECT * FROM PRODUCT WHERE PRODUCT_PARENT_ID='$id'";
+		$sql = "SELECT * FROM PRODUCT WHERE PRODUCT_PARENT_ID='$id' order by FEATURE_ID";
+        $result = $this->getData($sql);
+		return $result;
+	}
+	function loadProductJuniorByIdAndFeature($id,$feature){
+		$sql = "SELECT * FROM PRODUCT WHERE PRODUCT_PARENT_ID='$id' and FEATURE_ID LIKE '%$feature%' order by FEATURE_ID";
         $result = $this->getData($sql);
 		return $result;
 	}

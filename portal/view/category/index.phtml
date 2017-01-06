@@ -4,74 +4,100 @@
         $('#titleCategory').puimegamenu();
         $('#add').puibutton({icon: 'fa-plus'});
         $('#txtCategoryName').puiinputtext();
+        $('#txtW').puiinputtext();
+        $('#txtH').puiinputtext();
         $('#txtCategoryUrl').puiinputtext();
-		$('#chkActive').puiswitch({onLabel:'Hiện',offLabel:'Ẩn'});
+        $('#txtControllerEdit').puidropdown({
+            data: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/category/read-controller.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            }
+        });
+        $('#txtController').puidropdown({
+            data: function (callback) {
+                $.ajax({
+                    type: "GET",
+                    url: 'ajax-action/category/read-controller.php',
+                    dataType: "json",
+                    context: this,
+                    success: function (response) {
+                        callback.call(this, response);
+                    }
+                });
+            }
+        });
+        $('#chkActive').puiswitch({onLabel: 'Hiện', offLabel: 'Ẩn'});
         $('#txtCategoryLevel').puispinner({
-			min:0,
-			max:200
-		});
-		$('#txtCategoryOrdering').puispinner({
-			min:0,
-			max:200
-		});
-		
-		$('#txtCategoryNameEdit').puiinputtext();
+            min: 0,
+            max: 200
+        });
+        $('#txtCategoryOrdering').puispinner({
+            min: 0,
+            max: 200
+        });
+
+        $('#txtCategoryNameEdit').puiinputtext();
         $('#txtCategoryUrlEdit').puiinputtext();
-		$('#chkActiveEdit').puiswitch({onLabel:'Hiện',offLabel:'Ẩn'});
+        $('#chkActiveEdit').puiswitch({onLabel: 'Hiện', offLabel: 'Ẩn'});
         $('#txtCategoryLevelEdit').puispinner({
-			min:0,
-			max:200
-		});
-		$('#txtCategoryOrderingEdit').puispinner({
-			min:0,
-			max:200
-		});
-		
+            min: 0,
+            max: 200
+        });
+        $('#txtCategoryOrderingEdit').puispinner({
+            min: 0,
+            max: 200
+        });
+
         $('#mess').puigrowl();
         addMessage = function (msg) {
             $('#mess').puigrowl('show', msg);
         };
-		function changeActive(menuId){
-			$.ajax({
-                    type: "GET",
-                    url: 'ajax-action/category/view-list-category.php?active=change&menuId='+menuId,
-                    dataType: "json",
-                    context: this,
-                    success: function (response) {
-                        addMessage([{
-                                                    severity: 'info',
-                                                    summary: '',
-                                                    detail: 'Cập nhật trạng thái thành công'
-                                                }]);
-						  $('#tblCategory').puidatatable('reload');
-                    }
-                });
-		}
+        function changeActive(menuId) {
+            $.ajax({
+                type: "GET",
+                url: 'ajax-action/category/view-list-category.php?active=change&menuId=' + menuId,
+                dataType: "json",
+                context: this,
+                success: function (response) {
+                    addMessage([{
+                        severity: 'info',
+                        summary: '',
+                        detail: 'Cập nhật trạng thái thành công'
+                    }]);
+                    $('#tblCategory').puidatatable('reload');
+                }
+            });
+        }
 
         $('#tblCategory').puidatatable({
             emptyMessage: 'Không có danh sách danh mục',
-            paginator: {
-                rows: 10
-            },
             columns: [
                 {
-                    field: 'MENU_ID', headerText: 'Mã danh mục', sortable: true
+                    field: 'MENU_ID', headerText: 'Mã', headerStyle: 'width:50px'
                 },
-                {field: 'NAME', headerText: 'Tên danh mục', sortable: true},
-				{field: 'URL', headerText: 'Đường dẫn', sortable: true},
-				{field: 'LEVEL', headerText: 'Menu Cấp', sortable: true},
-				{field: 'ORDERING', headerText: 'Thứ tự', sortable: true},
-				{field: 'PARENTS', headerText: 'Thuộc danh mục', sortable: true},
-				{
-					field: 'ENABLED', headerText: 'Trạng thái', sortable: true,content: function (active) {
-						if(active.ENABLED==0)
-							return $('<input onchange=changeActive("' + active.MENU_ID + '") id="chkActive-'+active.MENU_ID+'" name="chkActive-'+active.MENU_ID+'" type="checkbox"/>');
-						else
-							return $('<input onchange=changeActive("' + active.MENU_ID + '") id="chkActive-'+active.MENU_ID+'" name="chkActive-'+active.MENU_ID+'" type="checkbox" checked/>');
-						
-					}
-				},
-				
+                {field: 'NAME', headerText: 'Tên danh mục'},
+                {field: 'URL', headerText: 'Đường dẫn'},
+                {field: 'CONTROLLER', headerText: 'Controller', headerStyle: 'width:190px'},
+                {field: 'LEVEL', headerText: 'Cấp', headerStyle: 'width:70px'},
+                {field: 'ORDERING', headerText: 'Thứ tự', headerStyle: 'width:70px'},
+                {field: 'PARENTS', headerText: 'Thuộc danh mục'},
+                {
+                    field: 'ENABLED', headerText: 'Trạng thái', headerStyle: 'width:100px', content: function (active) {
+                    if (active.ENABLED == 0)
+                        return $('<input onchange=changeActive("' + active.MENU_ID + '") id="chkActive-' + active.MENU_ID + '" name="chkActive-' + active.MENU_ID + '" type="checkbox"/>');
+                    else
+                        return $('<input onchange=changeActive("' + active.MENU_ID + '") id="chkActive-' + active.MENU_ID + '" name="chkActive-' + active.MENU_ID + '" type="checkbox" checked/>');
+
+                }
+                }
+
             ],
             datasource: function (callback) {
                 $.ajax({
@@ -81,15 +107,15 @@
                     context: this,
                     success: function (response) {
                         callback.call(this, response);
-						$.each(response, function (key, value) {
-							$('#chkActive-'+value.MENU_ID).puiswitch({onLabel:'Hiện',offLabel:'Ẩn'});
-						});
+                        $.each(response, function (key, value) {
+                            $('#chkActive-' + value.MENU_ID).puiswitch({onLabel: 'Hiện', offLabel: 'Ẩn'});
+                        });
                     }
                 });
             },
-			selectionMode: 'single'
-		});
-		$('#dlgEditCategory').puidialog({
+            selectionMode: 'single'
+        });
+        $('#dlgEditCategory').puidialog({
             showEffect: 'fade',
             hideEffect: 'fade',
             minimizable: false,
@@ -109,6 +135,7 @@
                     icon: 'fa-plus',
                     click: function () {
                         var categoryName = $('#txtCategoryNameEdit').val();
+                        var txtControllerEdit = $('#txtControllerEdit').val();
                         if (categoryName == null || categoryName == "") {
                             addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập tên danh mục'}]);
                         } else {
@@ -131,18 +158,18 @@
                                         success: function (data, textStatus, jqXHR) {
                                             $('#loading').hide();
                                             $('#dlgEditCategory').unblock();
-                                                $('#tblCategory').puidatatable('reload');
-                                                addMessage([{
-                                                    severity: 'info',
-                                                    summary: '',
-                                                    detail: 'Cập nhật danh mục thành công'
-                                                }]);
-											$('#drpCategoryEdit').remove();
-											$('#drpCateDivEdit').append('<select id="drpCategoryEdit" name="drpCategoryEdit"><option value="0">--Danh mục gốc--</option></select>');
-											$('#drpCategoryEdit').puidropdown({
-												data: data
-											});
-											 $('#dlgEditCategory').puidialog('hide');
+                                            $('#tblCategory').puidatatable('reload');
+                                            addMessage([{
+                                                severity: 'info',
+                                                summary: '',
+                                                detail: 'Cập nhật danh mục thành công'
+                                            }]);
+                                            $('#drpCategoryEdit').remove();
+                                            $('#drpCateDivEdit').append('<select id="drpCategoryEdit" name="drpCategoryEdit"><option value="0">--Danh mục gốc--</option></select>');
+                                            $('#drpCategoryEdit').puidropdown({
+                                                data: data
+                                            });
+                                            $('#dlgEditCategory').puidialog('hide');
                                         },
                                         error: function (jqXHR, textStatus, errorThrown) {
                                             addMessage([{
@@ -163,7 +190,80 @@
                 }
             ]
         });
-	
+        $('#dlgAddImage').puidialog({
+            showEffect: 'fade',
+            hideEffect: 'fade',
+            minimizable: false,
+            maximizable: false,
+            responsive: true,
+            width: 500,
+            modal: true,
+            buttons: [{
+                text: 'Đóng',
+                icon: 'fa-close',
+                click: function () {
+                    $('#dlgAddImage').puidialog('hide');
+                }
+            },
+                {
+                    text: 'Thêm',
+                    icon: 'fa-plus',
+                    click: function () {
+                        var _form = $('#frmAddImage');
+                        _form.unbind();
+
+                        _form.submit(function (e) {
+                            $('#loading').show();
+                            $('#dlgAddImage').block({
+                                message: null,
+                                overlayCSS: {backgroundColor: '#000', opacity: 0.3}
+                            });
+                            var formData = new FormData(this);
+                            var formURL = $(this).attr("action");
+                            $.ajax(
+                                {
+                                    url: formURL,
+                                    type: "POST",
+                                    data: formData,
+                                    dataType: "json",
+                                    mimeType:"multipart/form-data",
+                                    contentType: false,
+                                    cache: false,
+                                    processData:false,
+                                    success: function (data, textStatus, jqXHR) {
+                                        $('#tblCategory').puidatatable('reload');
+                                        $('#loading').hide();
+                                        $('#dlgAddImage').unblock();
+                                        addMessage([{
+                                            severity: 'info',
+                                            summary: '',
+                                            detail: 'Thêm hình thành công'
+                                        }]);
+                                        $('#dlgAddImage').puidialog('hide');
+                                        $('#drpCategory').remove();
+                                        $('#drpCateDiv').append('<select id="drpCategory" name="drpCategory"><option value="0">--Danh mục gốc--</option></select>');
+                                        $('#drpCategory').puidropdown({
+                                            data: data
+                                        });
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        addMessage([{
+                                            severity: 'error',
+                                            summary: '',
+                                            detail: 'Lỗi thêm danh mục'
+                                        }]);
+                                        $('#loading').hide();
+                                        $('#dlgAddCategory').unblock();
+                                    }
+                                });
+                            e.preventDefault();	//STOP default action
+                        });
+                        $("#frmAddImage").submit(); //SUBMIT FORM
+                    }
+                }
+            ]
+        });
+
         document.title = 'Danh sách danh mục';
         $('#dlgAddCategory').puidialog({
             showEffect: 'fade',
@@ -208,17 +308,17 @@
                                         success: function (data, textStatus, jqXHR) {
                                             $('#loading').hide();
                                             $('#dlgAddCategory').unblock();
-                                                $('#tblCategory').puidatatable('reload');
-                                                addMessage([{
-                                                    severity: 'info',
-                                                    summary: '',
-                                                    detail: 'Thêm danh mục thành công'
-                                                }]);
-											$('#drpCategory').remove();
-											$('#drpCateDiv').append('<select id="drpCategory" name="drpCategory"><option value="0">--Danh mục gốc--</option></select>');
-											$('#drpCategory').puidropdown({
-												data: data
-											});
+                                            $('#tblCategory').puidatatable('reload');
+                                            addMessage([{
+                                                severity: 'info',
+                                                summary: '',
+                                                detail: 'Thêm danh mục thành công'
+                                            }]);
+                                            $('#drpCategory').remove();
+                                            $('#drpCateDiv').append('<select id="drpCategory" name="drpCategory"><option value="0">--Danh mục gốc--</option></select>');
+                                            $('#drpCategory').puidropdown({
+                                                data: data
+                                            });
                                         },
                                         error: function (jqXHR, textStatus, errorThrown) {
                                             addMessage([{
@@ -246,62 +346,69 @@
                 $('#dlgAddCategory').puidialog('show');
             }
         });
-		$.ajax({
-                    type: "GET",
-                    url: 'ajax-action/category/view-list-category.php?listCateAdd=0',
-                    dataType: "json",
-                    context: this,
-                    success: function (response) {
-                        $('#drpCategory').remove();
-						$('#drpCateDiv').append('<select id="drpCategory" name="drpCategory"><option value="0">--Danh mục gốc--</option></select>');
-						$('#drpCategory').puidropdown({
-							data: response
-						});
-                    }
-         });
-		$('#cm').puicontextmenu({
-			target: $('#tblCategory')
-		});
-		  window.ContextMenuDemo = {
- 
-					view: function() {
-						var selections = $('#tblCategory').puidatatable('getSelection');
-					if (selections.length === 1) {
-					$.ajax({
-								type: "GET",
-								url: 'ajax-action/category/view-list-category.php?listCateAdd='+selections[0].MENU_ID,
-								dataType: "json",
-								context: this,
-								success: function (response) {
-									$('#drpCategoryEdit').remove();
-									$('#drpCateDivEdit').append('<select id="drpCategoryEdit" name="drpCategoryEdit"><option value="0">--Danh mục gốc--</option></select>');
-									$('#drpCategoryEdit').puidropdown({
-										data: response
-									});
-									
-										if (selections[0]) {
-											$('#dlgEditCategory_label').text("Sửa danh mục - " + $.trim(selections[0].NAME.replace(/-/g, " ")) );
-											$("#caterory_id").val(selections[0].MENU_ID);
-											$("#txtCategoryNameEdit").val($.trim(selections[0].NAME.replace(/-/g, " ")));
-											$("#txtCategoryUrl").val(selections[0].URL);
-											$("#txtCategoryLevelEdit").val(selections[0].LEVEL);
-											$("#txtCategoryOrderingEdit").val(selections[0].ORDERING);
-											if(selections[0].ENABLED==1)
-												$('#chkActiveEdit').puiswitch('check');
-											else
-												$('#chkActiveEdit').puiswitch('uncheck');
-											var arr=selections[0].PARENTS.split('--');
-											$('#drpCategoryEdit').puidropdown('selectValue', $.trim(arr[1]));
-											$('#dlgEditCategory').puidialog('show');
-										}
-								}
-					 });
-					 }else {
-										addMessage([{severity:'warn', summary: 'Thông báo', detail: 'Vui lòng chọn danh mục cần sửa'}]);
-									}
-						$('#dlgEditCategory').puidialog('show');
-					}
-				};
+        $.ajax({
+            type: "GET",
+            url: 'ajax-action/category/view-list-category.php?listCateAdd=0',
+            dataType: "json",
+            context: this,
+            success: function (response) {
+                $('#drpCategory').remove();
+                $('#drpCateDiv').append('<select id="drpCategory" name="drpCategory"><option value="0">--Danh mục gốc--</option></select>');
+                $('#drpCategory').puidropdown({
+                    data: response
+                });
+            }
+        });
+        $('#cm').puicontextmenu({
+            target: $('#tblCategory')
+        });
+        window.ContextMenuDemo = {
+
+            view: function () {
+                var selections = $('#tblCategory').puidatatable('getSelection');
+                if (selections.length === 1) {
+                    $.ajax({
+                        type: "GET",
+                        url: 'ajax-action/category/view-list-category.php?listCateAdd=' + selections[0].MENU_ID,
+                        dataType: "json",
+                        context: this,
+                        success: function (response) {
+                            $('#drpCategoryEdit').remove();
+                            $('#drpCateDivEdit').append('<select id="drpCategoryEdit" name="drpCategoryEdit"><option value="0">--Danh mục gốc--</option></select>');
+                            $('#drpCategoryEdit').puidropdown({
+                                data: response
+                            });
+
+                            if (selections[0]) {
+                                $('#dlgEditCategory_label').text("Sửa danh mục - " + $.trim(selections[0].NAME.replace(/-/g, " ")));
+                                $("#caterory_id").val(selections[0].MENU_ID);
+                                $("#txtCategoryNameEdit").val($.trim(selections[0].NAME.replace(/-/g, " ")));
+                                $("#txtCategoryUrlEdit").val(selections[0].URL);
+                                $("#txtCategoryLevelEdit").val(selections[0].LEVEL);
+                                $("#txtCategoryOrderingEdit").val(selections[0].ORDERING);
+                                $('#txtControllerEdit').puidropdown('selectValue', selections[0].CONTROLLER);
+                                if (selections[0].ENABLED == 1)
+                                    $('#chkActiveEdit').puiswitch('check');
+                                else
+                                    $('#chkActiveEdit').puiswitch('uncheck');
+                                var arr = selections[0].PARENTS.split('--');
+                                $('#drpCategoryEdit').puidropdown('selectValue', $.trim(arr[arr.length - 1]));
+                                $('#dlgEditCategory').puidialog('show');
+                            }
+                        }
+                    });
+                } else {
+                    addMessage([{severity: 'warn', summary: 'Thông báo', detail: 'Vui lòng chọn danh mục cần sửa'}]);
+                }
+                $('#dlgEditCategory').puidialog('show');
+            },
+            Image: function () {
+                $("#frmAddImage")[0].reset();
+                var selections = $('#tblCategory').puidatatable('getSelection');
+                $("#caterory_idi").val(selections[0].MENU_ID);
+                $('#dlgAddImage').puidialog('show');
+            }
+        };
     </script>
     <style type="text/css">
         .ui-dropdown {
@@ -319,117 +426,161 @@
     <img id="loading" src='../../primeui/showcase/resources/images/loading.gif'/>
 
     <div id="mess"/>
-	<ul id="cm">
-		<li><a data-icon="fa-pencil" onclick="ContextMenuDemo.view()">Sửa</a></li>
-	</ul>
+    <ul id="cm">
+        <li><a data-icon="fa-pencil" onclick="ContextMenuDemo.view()">Sửa</a></li>
+        <li><a data-icon="fa-plus" onclick="ContextMenuDemo.Image()">Thêm hình</a></li>
+    </ul>
+    <div id="dlgAddImage" title="Thêm hình">
+        <p>
+
+        <form name="frmAddImage" id="frmAddImage" action="ajax-action/category/add-image.php"
+              method="POST" enctype="multipart/form-data">
+            <input name="caterory_idi" id="caterory_idi" type="hidden">
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Chọn </div>
+                <div class="ui-grid-col-2"><input id="image" name="image" type="file"/> </div>
+            </div>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Chiều rộng (w)</div>
+                <div class="ui-grid-col-2"><input id="txtW" name="txtW" type="text"
+                                                  style="width: 300px;"/></div>
+            </div>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Chiều cao (h) </div>
+                <div class="ui-grid-col-2"><input id="txtH" name="txtH" type="text"
+                                                  style="width: 300px;"/></div>
+            </div>
+         </form>
+        </p>
+    </div>
     <div id="dlgAddCategory" title="Thêm danh mục">
         <p>
+
         <form name="frmCategory" id="frmCategory" action="ajax-action/category/add-category.php"
               method="POST">
             <input type="hidden" name="actionadd" value="add">
 
-				<div class="ui-grid ui-grid-responsive">
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Tên danh mục</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryName" name="txtCategoryName" type="text"
-														  style="width: 300px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Đường dẫn</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryUrl" name="txtCategoryUrl" type="text"
-														  style="width: 300px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Menu Cấp</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryLevel" name="txtCategoryLevel" type="text" value="0"
-														  style="width: 100px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Thứ tự</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryOrdering" name="txtCategoryOrdering" type="text" value="0"
-														  style="width: 100px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Thuộc danh mục</div>
-						<div class="ui-grid-col-2"><div id="drpCateDiv"></div>
-							
-						</div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Trạng thái</div>
-						<div class="ui-grid-col-1"><input id="chkActive" name="chkActive" type="checkbox"
-														  /></div>
-					</div>
-				</div>
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Tên danh mục</div>
+                    <div class="ui-grid-col-2"><input id="txtCategoryName" name="txtCategoryName" type="text"
+                                                      style="width: 300px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Đường dẫn</div>
+                    <div class="ui-grid-col-2"><input id="txtCategoryUrl" name="txtCategoryUrl" type="text"
+                                                      style="width: 300px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Controller</div>
+                    <div class="ui-grid-col-2"><select id="txtController" name="txtController">
+                            <option value="">--Chọn--</option>
+                        </select></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Menu Cấp</div>
+                    <div class="ui-grid-col-2"><input id="txtCategoryLevel" name="txtCategoryLevel" type="text"
+                                                      value="0"
+                                                      style="width: 100px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Thứ tự</div>
+                    <div class="ui-grid-col-2"><input id="txtCategoryOrdering" name="txtCategoryOrdering" type="text"
+                                                      value="0"
+                                                      style="width: 100px;"/></div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Thuộc danh mục</div>
+                    <div class="ui-grid-col-2">
+                        <div id="drpCateDiv"></div>
+
+                    </div>
+                </div>
+                <div class="ui-grid-row" style="margin-top:8px">
+                    <div class="ui-grid-col-3">Trạng thái</div>
+                    <div class="ui-grid-col-1"><input id="chkActive" name="chkActive" type="checkbox"
+                            /></div>
+                </div>
             </div>
-        </form>
-        </p>
     </div>
-	
-	<div id="dlgEditCategory" title="Sửa danh mục">
-        <p>
-        <form name="frmEditCategory" id="frmEditCategory" action="ajax-action/category/edit-category.php"
-              method="POST">
-				<div class="ui-grid ui-grid-responsive">
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Tên danh mục</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryNameEdit" name="txtCategoryNameEdit" type="text"
-														  style="width: 300px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Đường dẫn</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryUrlEdit" name="txtCategoryUrlEdit" type="text"
-														  style="width: 300px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Menu Cấp</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryLevelEdit" name="txtCategoryLevelEdit" type="text" value="0"
-														  style="width: 100px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Thứ tự</div>
-						<div class="ui-grid-col-2"><input id="txtCategoryOrderingEdit" name="txtCategoryOrderingEdit" type="text" value="0"
-														  style="width: 100px;"/></div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Thuộc danh mục</div>
-						<div class="ui-grid-col-2"><div id="drpCateDivEdit"></div>
-							
-						</div>
-					</div>
-					<div class="ui-grid-row" style="margin-top:8px">
-						<div class="ui-grid-col-3">Trạng thái</div>
-						<div class="ui-grid-col-1"><input id="chkActiveEdit" name="chkActiveEdit" type="checkbox"
-														  /></div>
-					</div>
-					<input name="caterory_id" id="caterory_id" type="hidden">
-				</div>
+    </form>
+    </p>
+</div>
+
+<div id="dlgEditCategory" title="Sửa danh mục">
+    <p>
+
+    <form name="frmEditCategory" id="frmEditCategory" action="ajax-action/category/edit-category.php"
+          method="POST">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Tên danh mục</div>
+                <div class="ui-grid-col-2"><input id="txtCategoryNameEdit" name="txtCategoryNameEdit" type="text"
+                                                  style="width: 300px;"/></div>
             </div>
-        </form>
-        </p>
-    </div>
-	
-    <div class="ContentSideSections">
-        <div id="titleCategory">
-            <ul>
-                <li style="width:20%;padding-top: 8px;font-size: 13px;font-weight:600;">DANH SÁCH DANH MỤC</li>
-				<li style="width:80%;text-align:right">
-                    <button id="add" type="button">Thêm</button>
-                </li>
-                <ul>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Đường dẫn</div>
+                <div class="ui-grid-col-2"><input id="txtCategoryUrlEdit" name="txtCategoryUrlEdit" type="text"
+                                                  style="width: 300px;"/></div>
+            </div>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Controller</div>
+                <div class="ui-grid-col-2"><select id="txtControllerEdit" name="txtControllerEdit">
+                        <option value="">--Chọn--</option>
+                    </select></div>
+            </div>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Menu Cấp</div>
+                <div class="ui-grid-col-2"><input id="txtCategoryLevelEdit" name="txtCategoryLevelEdit" type="text"
+                                                  value="0"
+                                                  style="width: 100px;"/></div>
+            </div>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Thứ tự</div>
+                <div class="ui-grid-col-2"><input id="txtCategoryOrderingEdit" name="txtCategoryOrderingEdit"
+                                                  type="text" value="0"
+                                                  style="width: 100px;"/></div>
+            </div>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Thuộc danh mục</div>
+                <div class="ui-grid-col-2">
+                    <div id="drpCateDivEdit"></div>
+
+                </div>
+            </div>
+            <div class="ui-grid-row" style="margin-top:8px">
+                <div class="ui-grid-col-3">Trạng thái</div>
+                <div class="ui-grid-col-1"><input id="chkActiveEdit" name="chkActiveEdit" type="checkbox"
+                        /></div>
+            </div>
+            <input name="caterory_id" id="caterory_id" type="hidden">
         </div>
+</div>
+</form>
+</p>
+</div>
+
+<div class="ContentSideSections">
+    <div id="titleCategory">
+        <ul>
+            <li style="width:20%;padding-top: 8px;font-size: 13px;font-weight:600;">DANH SÁCH DANH MỤC</li>
+            <li style="width:80%;text-align:right">
+                <button id="add" type="button">Thêm</button>
+            </li>
+            <ul>
     </div>
+</div>
 
-    <div class="ContentSideSections Implementation">
-        <div id="tblCategory"></div>
-    </div>
+<div class="ContentSideSections Implementation">
+    <div id="tblCategory"></div>
+</div>
 
-    <!--<div id="SourceContentSide" class="ContentSideSections Source">
-        dddđ
-    </div>-->
+<!--<div id="SourceContentSide" class="ContentSideSections Source">
+    dddđ
+</div>-->
 
-    <script language="javascript">
-        SyntaxHighlighter.highlight();
-    </script>
+<script language="javascript">
+    SyntaxHighlighter.highlight();
+</script>
 
 </div>
