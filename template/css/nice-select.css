@@ -127,7 +127,7 @@
     -webkit-transition: all 0.2s;
     transition: all 0.2s; }
     .nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
-      background-color: rgba(218, 56, 189, 0.6);
+      background-color: rgba(189, 22, 159, 0.27);
       color: #272727;
       }
       .nice-select .option.selected {

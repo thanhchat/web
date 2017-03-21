@@ -66,13 +66,14 @@ class productcategory extends database
             throw new Exception($e->getMessage());
         }
 	}
-	function addProductCategory($idProduct,$idCategory,$ordering,$active){
+	function addProductCategory($idProduct,$idCategory,$productCategoryParent,$ordering,$active){
 		try {
             $this->beginTransaction();
-            $sql = "INSERT INTO  product_category (PRODUCT_CATEGORY_ID,PRODUCT_ID,DEFAULT_SEQUENCE_NUM,ACTIVE) VALUES(:idCategory,:idProduct,:ordering,:active)";
+            $sql = "INSERT INTO  product_category (PRODUCT_CATEGORY_ID,PRODUCT_ID,PRODUCT_CATEGORY_ID_PARENT,DEFAULT_SEQUENCE_NUM,ACTIVE) VALUES(:idCategory,:idProduct,:productCategoryParent,:ordering,:active)";
             $this->query($sql);
 			$this->bind(':idCategory', $idCategory);
 			$this->bind(':idProduct', $idProduct);
+			$this->bind(':productCategoryParent', $productCategoryParent);
 			$this->bind(':active', $active);
 			$this->bind(':ordering', $ordering);
             $this->execute();

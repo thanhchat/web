@@ -3,8 +3,17 @@ body {
     font-family: 'Roboto', sans-serif;
 	font-size: 14px;background: #ffffff;}
 
-
+#slider-container {
+    width: 27%;
+    float:left;
+    margin-left: -20px;
+    margin-top: 6px;
+}
+.wow {
+   visibility: hidden;
+}
 .product-bit-title{border-bottom: solid 1px #efefef;}
+
 .logo-404 {
     margin-top: 60px;
 }
@@ -21,6 +30,21 @@ body {
 .aligncenter {
     display: block;
     margin: 0 auto 15px;
+}
+#more{
+    text-align: center;
+    padding: 10px 0;
+    width: 60%;
+    border: 1px solid rgba(204, 204, 204, 0.23);
+    border-radius: 10px;
+    margin: auto;
+    background: #fff;
+    margin-bottom: 15px;
+}
+#more:hover{
+    cursor: pointer;
+    background: #ccc;
+    color:white;
 }
 a:focus { outline: 0px solid }
 img {
@@ -65,6 +89,7 @@ h6 {
     font-weight: 300;
     padding: 8px 15px;
 }
+.navbar-nav>li{margin-right:3px;}
 .header-area {
     background: none repeat scroll 0 0 #252525;
     color: #ffffff;
@@ -492,7 +517,7 @@ z-index: 999;}
 .product-hover a i.fa {
     margin-right: 5px;
 }
-.product-hover a.add-to-cart-link {top: -25%;}
+.product-hover a.add-to-cart-link {top: -25%;cursor: pointer;}
 .product-hover a.view-details-link { bottom: -25%;}
 .single-product h2 {
     font-size: 18px;
@@ -821,7 +846,7 @@ input[type="submit"]:hover, button[type=submit]:hover {background-color: #222}
     width: 63px;
 }
 .thubmnail-recent > h2 {
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 10px;
 }
 .thubmnail-recent > h2 a {
@@ -1314,19 +1339,17 @@ a:focus {
 .cart-item{
     width:20%;
     float:left;
-    margin-right:5%;
-
+    margin-right: 3%;
 }
 .cart-item img{
     width:100%;
 }
 .cart-item-info{
-    width:75%;
+    width: 77%;
     float:left;
-
 }
 .check{
-    padding:5em 0;
+    padding: 1em 0;
 }
 .cart-item-info h3{
     font-size:1em;
@@ -1403,9 +1426,9 @@ a.order:hover{
 .order i{margin-right:8px;}
 .total-item,.cart-items{
     margin-top:0em;
-    padding-bottom:2em;
+    /* padding-bottom: 1px; */
     background: #fbfbfb;
-    padding-top: 10px;
+    padding-top: 1px;
 }
 
 .total-item h3 {
@@ -1438,7 +1461,7 @@ div.cpns:hover{
 .total-item p{
     font-size:0.9em;
     font-weight:400;
-    margin-top:1em;
+    margin-top: 2px;
     color:#5a5a5a;
     padding: 5px;
 }
@@ -1526,7 +1549,7 @@ ul.qty{
 }
 ul.qty li{
     display: inline-block;
-    margin-right: 10%;
+    margin-right: 5%;
 }
 ul.qty li p{
     font-size: 1em;
@@ -1649,6 +1672,7 @@ span.item_price ins {
     margin: 0.4em 0.1em 0;
     width:34%;
 }
+.box_1 a:hover{color:#b11194;}
 .box_1 h3 {
     color: #000;
     font-size: 0.85em;
@@ -1660,7 +1684,7 @@ span.item_price ins {
 }
 .box_1 p {
     color: #000;
-    font-size: 0.85em;
+    font-size: 1em;
     float: left;
     margin: 0.2em 1.3em 0;
     text-align:left;
@@ -2175,8 +2199,8 @@ ul.megamenu.skyblue {
     transition: all 0.3s ease-in-out;
 }
 .crt-btn a:hover{
-    background:#da38bd;
-    border-top:1px solid #da38bd;
+    background:rgba(119, 119, 119, 0.41);
+    border-top:1px solid #ffffff;
     border-radius:10px;
 }
 .arriv-info1 {
@@ -2575,13 +2599,41 @@ ul.grid_2 li {
 .w_nav2{
     padding: 20px;
 }
+.w_nav_tags{
+    padding: 10px;
+}
+.w_nav_tags  li{
+    line-height: 1.5em;
+    display: inline-block;
+    margin-bottom:5px;
+}
+.w_nav_tags li a{
+    display: block;
+    border: solid 1px #efefef;
+    padding: 10px;
+    border-radius:5px;
+}
+.w_nav_tags li a:hover{
+    display: block;
+    padding: 10px;
+    background:rgba(218, 56, 189, 0.37);
+    text-decoration:none;
+    border-radius:5px;
+}
 .w_nav2  li{
     line-height: 1.5em;
     display: inline-block;
 }
-.w_nav2 li a{
+.w_nav2 li span{
     display: block;
     padding: 14px;
+    cursor: pointer;
+}
+.w_nav2 li span.active{
+    display: block;
+    padding: 13px;
+    cursor: pointer;
+    border: solid 2px #ccc;
 }
 .w_nav2 li a.color1{
     background:	#0AA5E2;
@@ -2649,7 +2701,7 @@ ul.grid_2 li {
     outline:none;
     padding: 20px;
     overflow: auto;
-    height: 200px;
+    height: 300px;
 }
 .sky-form.col.col-4 ul {
     padding: 0;
@@ -2753,6 +2805,7 @@ ul.grid_2 li {
     border-width: 2px;
     border-style: solid;
     background: #fff;
+    /* border-radius: 50%; */
 }
 .sky-form .radio i {
     border-radius: 50%;

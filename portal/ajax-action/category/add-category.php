@@ -14,7 +14,7 @@ if(!empty($_POST)){
 	$txtController =$_POST['txtController'];
 	$chkActive =isset($_POST['chkActive'])?1:0;
 	$objCat->addAction($txtCategoryName,$txtCategoryUrl,$txtCategoryOrdering,$chkActive,$drpCategory,$txtCategoryLevel,$txtController);
-	$listMenu1 = $objCat->Menu(CATEGORY_HOME_ID,-1,null,"----");
+	$listMenu1 = $objCat->Menu(CATEGORY_DEFAULT_ID,-1,null,"----");
 	if (count($listMenu1) > 0) {
 		foreach ($listMenu1 as $k => $v) {
 			 $stack = array("label" => $v['NAME'], "value" => $v['MENU_ID']);

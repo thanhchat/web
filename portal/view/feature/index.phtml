@@ -81,6 +81,12 @@
                                         editor: 'input'
                                     },
                                     {
+                                        field: 'COMMENT',
+                                        headerText: 'Ghi chú',
+                                        sortable: true,
+                                        editor: 'input'
+                                    },
+                                    {
                                         field: 'ACTIVE',
                                         headerText: 'Trạng thái',
                                         sortable: true,
@@ -96,7 +102,7 @@
                                 cellEdit: function (event, ui) {
                                     //$('#dlgMess').puidialog('show');
                                     var value = ui.newValue;
-                                    if (value == null || value == "") {
+                                    if ((value == null || value == "")&&ui.field != 'COMMENT') {
                                         addMessage([{severity: 'warn', summary: '', detail: 'Phải nhập giá trị'}]);
                                         $('#tblFeature').puidatatable('reload');
                                     } else if (ui.field == 'DEFAULT_SEQUENCE_NUM' && value % 1 !== 0) {
@@ -114,7 +120,7 @@
                                         });
                                         $.ajax({
                                             type: "GET",
-                                            url: 'ajax-action/feature/update-feature.php?field=' + ui.field + '&val=' + ui.newValue + '&id=' + ui.data.PRODUCT_FEATURE_ID,
+                                            url: 'ajax-action/feature/update-feature.php?field=' + ui.field + '&val=' + escape(ui.newValue) + '&id=' + ui.data.PRODUCT_FEATURE_ID,
                                             dataType: "json",
                                             context: this,
                                             success: function (data) {

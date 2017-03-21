@@ -3,7 +3,9 @@
 include_once("../../../configs/application.php");
 include_once("../../../connections/class.db.php");
 include_once("../../model/product-category.php");
+include_once("../../model/product.php");
 $objProductCategory=new productcategory();
+$objProduct = new product();
 $idCategory=$_GET['idCategory'];
 $idProduct=$_GET['idProduct'];
 $array = array();
@@ -11,7 +13,8 @@ $check=$objProductCategory->checkProductCategory($idProduct,$idCategory);
 if($check>0) {
     $array['error'] = 1;
 }else {
-    $objProductCategory->addProductCategory($idProduct, $idCategory, 0, 0);
+	$product=$objProduct->getProductById($idProduct);
+    $objProductCategory->addProductCategory($idProduct, $idCategory,$product[0]['PRODUCT_CATEGORY_ID'], 0, 1);
 //    $list_product_category = $objProductCategory->getListProductCategoryByIdCategory($idCategory);
 //    if (count($list_product_category) > 0) {
 //        foreach ($list_product_category as $k => $v) {

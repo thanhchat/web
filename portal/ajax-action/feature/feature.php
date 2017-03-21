@@ -12,7 +12,7 @@ $listFeature = $objFeature->getListFeatureByFeatureType($id);
             $ac = 'Ẩn';
             if ($v['ACTIVE'] == 1)
                 $ac = 'Hiển thị';
-            $stack = array("PRODUCT_FEATURE_ID" => $v['PRODUCT_FEATURE_ID'], "DESCRIPTION_FEATURE" => $v['DESCRIPTION_FEATURE'], "DEFAULT_SEQUENCE_NUM" => $v['DEFAULT_SEQUENCE_NUM'], "ACTIVE" => $ac);
+            $stack = array("PRODUCT_FEATURE_ID" => $v['PRODUCT_FEATURE_ID'], "DESCRIPTION_FEATURE" => $v['DESCRIPTION_FEATURE'], "DEFAULT_SEQUENCE_NUM" => $v['DEFAULT_SEQUENCE_NUM'], "COMMENT" => $v['COMMENT'], "ACTIVE" => $ac);
             array_push($array, $stack);
         }
     }

@@ -25,7 +25,7 @@ if(isset($_GET['action'])){
 		}
 }else{
 	$field=$_GET['field'];
-	$val=$_GET['val'];
+	$val=mysql_real_escape_string($_GET['val']);
 		$check=$objFeature->updateFeature($field,$val,$id);
 			if($check==0)
 				$array['mess']='2';

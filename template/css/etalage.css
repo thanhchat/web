@@ -38,7 +38,7 @@
 #etalage ul li.etalage_smallthumb_last{ }
 /* The currently active one */
 #etalage ul li.etalage_smallthumb_active{
-	
+	border: solid 2px #f90d0d;
 }
 
 /* Zoomed image area: */
@@ -93,6 +93,9 @@
 .etalage_small_thumbs li img{
 	width:60px !important;
 	height:100% !important;
+}
+.etalage_small_thumbs li img:hover{
+	border:solid 1px #a9098c;
 }
 .etalage_small_thumbs{
 	width:100% !important;

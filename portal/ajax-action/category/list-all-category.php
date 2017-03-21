@@ -8,7 +8,10 @@ $listMenu1 = $objCat->Menu(CATEGORY_HOME_ID,-1,null,"----");
 $data = array();
 if (count($listMenu1) > 0) {
     foreach ($listMenu1 as $k => $v) {
-        $stack = array("label" => $v['NAME'], "value" => $v['MENU_ID']);
+        if(isset($v['disabled']))
+			$stack = array("label" => $v['NAME'], "value" => $v['MENU_ID'],"disabled"=>"disabled");
+		else
+			$stack = array("label" => $v['NAME'], "value" => $v['MENU_ID']);
         array_push($data, $stack);
     }
 }

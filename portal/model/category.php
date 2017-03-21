@@ -23,7 +23,16 @@ class category extends database {
         $query = $this->query($sql);
         $rs=$this->result();
         foreach($rs as $k=>$v){
-            $trees[] = array("MENU_ID" => $v['MENU_ID'], "NAME" => $space.$v['NAME'], "PARENTS" => $v['PARENTS'], "LEVEL" => $v['LEVEL'], "ORDERING" => ($v['ORDERING']!=null)?$v['ORDERING']:"", "ENABLED" => $v['ENABLED'], "URL" => ($v['URL']!=null)?$v['URL']:"","IMAGE" => ($v['IMAGE']!=null)?$v['IMAGE']:"","CONTROLLER" => ($v['CONTROLLER']!=null)?$v['CONTROLLER']:"");
+			if($level!=-1)
+				$sql1 = "SELECT * FROM $this->tbName WHERE PARENTS = ".$v['MENU_ID']." and LEVEL=$level order by ORDERING ASC";
+			else
+				$sql1 = "SELECT * FROM $this->tbName WHERE PARENTS = ".$v['MENU_ID']." order by ORDERING ASC";
+			$query1 = $this->query($sql1);
+			$rs1=$this->result();
+			if(count($rs1)>0)
+				$trees[] = array("disabled"=>"disabled","MENU_ID" => $v['MENU_ID'], "NAME" => $space.$v['NAME'], "PARENTS" => $v['PARENTS'], "LEVEL" => $v['LEVEL'], "ORDERING" => ($v['ORDERING']!=null)?$v['ORDERING']:"", "ENABLED" => $v['ENABLED'], "URL" => ($v['URL']!=null)?$v['URL']:"","IMAGE" => ($v['IMAGE']!=null)?$v['IMAGE']:"","CONTROLLER" => ($v['CONTROLLER']!=null)?$v['CONTROLLER']:"");
+			else
+				$trees[] = array("MENU_ID" => $v['MENU_ID'], "NAME" => $space.$v['NAME'], "PARENTS" => $v['PARENTS'], "LEVEL" => $v['LEVEL'], "ORDERING" => ($v['ORDERING']!=null)?$v['ORDERING']:"", "ENABLED" => $v['ENABLED'], "URL" => ($v['URL']!=null)?$v['URL']:"","IMAGE" => ($v['IMAGE']!=null)?$v['IMAGE']:"","CONTROLLER" => ($v['CONTROLLER']!=null)?$v['CONTROLLER']:"");
             $trees = $this->Menu($v['MENU_ID'],$level, $space.$char,$char, $trees);
         }
         return $trees;

@@ -14,8 +14,7 @@ define('HTTP', 'http://localhost:7070');
 
 define('DS', '/');
 define('TIMECACHE',3600*24*365*20);
-define('PAGEING',30);
-define('PAGE_NEWS',4);
+define('DEFAULT_VIEW_PRODUCT',20);
 define('TITLEWEB','Lùn Shop Online');
 define('TYPE_CACHE','auto');
 define('FOLDER_CACHE','yen_binh_chat_huong');
@@ -27,6 +26,7 @@ define('CATEGORY_HOME_ID',15);
 define('CATEGORY_DEFAULT_ID',0);
 define('CATEGORY_PRODUCT_ID',2);
 define('CATEGORY_PRODUCT_HOME_ID',16);
+define('FILTER_PRODUCT',20);
 
 
 

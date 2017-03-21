@@ -1,0 +1,106 @@
+<div class="product-widget-area">
+    <div class="container" style="padding-right: 0px;padding-left: 0px;">
+
+        <div class="check">
+            <div class="col-md-9 cart-items">
+                <h1>Giỏ hàng của bạn
+                    <total-item id="total-item">(<?= $objCart->get_total_item(); ?>)</total-item>
+                </h1>
+                <?php if ($objCart->get_total_item() != 0) {
+                foreach ($_SESSION['shopping_cart_online'] as $k => $v) {
+                    ?>
+                <div class="cart-header" id="cart-header-<?= $v['pid'] ?>">
+                    <div class="close1" id="close-<?= $v['pid'] ?>"
+                         onclick="deleteProduct('<?= $v['pid'] ?>','<?= $v['manuid'] ?>');"></div>
+                    <div class="cart-sec simpleCart_shelfItem">
+                    <div class="cart-item cyc">
+                        <img src="/public/product/<?= $v['pidParent']; ?>/medium/<?= $v['img']; ?>"
+                             alt="<?= $v['pidParent']; ?>" class="img-responsive">
+                    </div>
+                    <div class="cart-item-info">
+                    <h3><a href="<?= $v['url']; ?>/<?= convertStringAndId($v['pName'], $v['pidParent'], '.html'); ?>"
+                           style="text-decoration: underline;"><?= mb_strtoupper($v['pName'],'utf-8'); ?></a><span>Mã: <b><?= $v['manuid']; ?></b></span>
+                    </h3>
+                    <ul class="qty">
+                    <?php
+                    if ($v['feature'] != -1) {
+                        ?>
+                        <li><p><?=$v['feature']; ?></p></li>
+                        <?php }?>
+                        <li>
+                            <p>
+
+                            <div class="quantity buttons_added">Số lượng
+                                <input type="button" class="minus" value="-"
+                                       onclick="updateQuantity('Qty-<?= $v['pid'] ?>','DESC');updateTotalPriceProduct('<?= $v['pid'] ?>',<?= ($v['promo'] != 0) ? $v['promo'] : $v['price']; ?>);"/>
+                                <input type="number" size="4"
+                                       onblur="checkEmptyToOne('<?= $v['pid'] ?>',<?= ($v['promo'] != 0) ? $v['promo'] : $v['price']; ?>);"
+                                       class="input-text qty text" title="Số lượng"
+                                       id="Qty-<?= $v['pid'] ?>" value="<?= $v['qty']; ?>"
+                                       min="1" step="1"/>
+                                <input type="button" class="plus" value="+"
+                                       onclick="updateQuantity('Qty-<?= $v['pid'] ?>','ASC');updateTotalPriceProduct('<?= $v['pid'] ?>',<?= ($v['promo'] != 0) ? $v['promo'] : $v['price']; ?>);"/>
+                            </div>
+                            </p>
+                        </li>
+                        <li>
+                            <p>Đơn giá : <?=($v['promo'] != 0) ? number_format($v['promo']).' VNĐ  <del>'.number_format($v['price']).' VNĐ</del>' : number_format($v['price']).' VNĐ'; ?>
+                            </p>
+                        </li>
+                        <li>
+                            <p><b>Thành tiền :</b>
+                                <price
+                                    style="color: red;"
+                                    id="priceProduct-<?= $v['pid'] ?>"><?= number_format(($v['promo'] != 0) ? $v['promo'] * $v['qty'] : $v['price'] * $v['qty']); ?>
+                                    VNĐ
+                                </price>
+                            </p>
+                        </li>
+                        </ul>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        </div>
+                        </div>
+
+                    <?php }
+                }
+                else{ ?>
+                    <div>Không có thông tin sản phẩm</div>
+                <?php } ?>
+            </div>
+            <div class="col-md-3 cart-total" style="padding-right: 0px;padding-left: 15px;">
+                <a class="continue" href="/"><i class="fa fa-buy"></i>TIẾP TỤC MUA HÀNG</a>
+                <?php if ($objCart->get_total_item() != 0) { ?>
+                    <div id="price-details">
+                        <div class="price-details">
+                             <!--<h3>Chi tiết giá</h3>-->
+                            <span>Tổng đơn hàng : </span>
+                            <span class="total1" id="total1"><?= number_format($objCart->get_order_total()); ?>
+                                VNĐ</span>
+                            <!--<span>Giảm giá : </span>
+                            <span class="total1">---</span>-->
+                            <span>Phí vận chuyển : </span>
+                            <span class="total1">------</span>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="cpns" href="#" id="cpnsID">SỬ DỤNG MÃ GIẢM GIÁ</div>
+                            <input type="text" id="coupons" placeholder="Nhập mã giảm giá" style="display:none"/>
+						</div>
+						<ul class="total_price">
+                            <li class="last_price"><h4>TỔNG CỘNG :</h4></li>
+                            <li class="last_price" id="last_price">
+                                <span><?= number_format($objCart->get_order_total()); ?> VNĐ</span></li>
+                            <div class="clearfix"></div>
+                        </ul>
+                        <a class="order" href="#"><i class="fa fa-money"></i>THANH TOÁN</a>
+                        <div class="total-item">
+                            <p><a href="/dang-nhap" title="Đăng nhập">Đăng nhập</a> để sử dụng tài khoản</p>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

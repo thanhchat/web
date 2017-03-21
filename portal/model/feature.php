@@ -68,18 +68,19 @@ class feature extends database
         return $count;
     }
 	
-	function addFeature($featureTypeId, $featureDes, $ordering,$active)
+	function addFeature($featureTypeId, $featureDes, $ordering,$active,$comment)
     {
         try {
 			
             $this->beginTransaction();
 			$id = $this->getIdMax();
-            $sql = "INSERT INTO product_feature(PRODUCT_FEATURE_ID,PRODUCT_FEATURE_TYPE_ID, DESCRIPTION_FEATURE, DEFAULT_SEQUENCE_NUM, ACTIVE) VALUES (:featureId,:featureTypeId,:featureDes,:ordering,:active)";
+            $sql = "INSERT INTO product_feature(PRODUCT_FEATURE_ID,PRODUCT_FEATURE_TYPE_ID, DESCRIPTION_FEATURE,COMMENT, DEFAULT_SEQUENCE_NUM, ACTIVE) VALUES (:featureId,:featureTypeId,:featureDes,:comment,:ordering,:active)";
             $this->query($sql);
             $this->bind(':featureId', $id);
 			$this->bind(':featureTypeId', $featureTypeId);
             $this->bind(':featureDes', $featureDes);
             $this->bind(':ordering', ($ordering!='')?$ordering:0);
+            $this->bind(':comment', $comment);
             $this->bind(':active', ($active>0)?1:0);
             $this->execute();
             $this->endTransaction();
